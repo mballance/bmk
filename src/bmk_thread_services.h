@@ -54,7 +54,7 @@ void bmk_mutex_unlock(bmk_mutex_t *m);
 
 void bmk_cond_init(bmk_cond_t *c);
 
-void bmk_cond_wait(bmk_cond_t *c, bmk_muex_t *m);
+void bmk_cond_wait(bmk_cond_t *c, bmk_mutex_t *m);
 
 void bmk_cond_signal(bmk_cond_t *c);
 
