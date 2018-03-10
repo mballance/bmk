@@ -4,10 +4,14 @@
  *  Created on: Feb 24, 2018
  *      Author: ballance
  */
+#include "bmk_pthread.h"
+#include "bmk_thread_services_target.h"
+
 #include "bmk_config.h"
-#include "bmk_pthreads.h"
 #include "bmk_int.h"
 #include <pthread.h>
+#include <stdlib.h>
+#include <string.h>
 
 static uint32_t				prv_nprocs;
 static pthread_key_t		prv_key;
@@ -30,7 +34,7 @@ void bmk_int_release_nonprimary_cores(void) {
 
 void *bmk_pthread_core_main(void *ud) {
 	core_data_t *core_data = (core_data_t *)ud;
-	pthread_setspecific(&prv_key, core_data);
+	pthread_setspecific(prv_key, core_data);
 
 	// Wait to be released
 	pthread_mutex_lock(&prv_global_mutex);
@@ -50,11 +54,11 @@ uint32_t bmk_get_nprocs(void) {
 }
 
 uint32_t bmk_get_procid(void) {
-	core_data_t *core_data = (core_data_t *)pthread_getspecific(&prv_key);
+	core_data_t *core_data = (core_data_t *)pthread_getspecific(prv_key);
 	return core_data->procid;
 }
 
-void bmk_pthreads_main(uint32_t n_cores) {
+void bmk_pthread_main(uint32_t n_cores) {
 	uint32_t i;
 
 	prv_nprocs = n_cores;
@@ -67,7 +71,7 @@ void bmk_pthreads_main(uint32_t n_cores) {
 		core_data->procid = i;
 
 		if (i == 0) {
-			pthread_setspecific(&prv_key, core_data);
+			pthread_setspecific(prv_key, core_data);
 			core_data->thread = pthread_self();
 		} else {
 			pthread_create(&core_data->thread, 0,

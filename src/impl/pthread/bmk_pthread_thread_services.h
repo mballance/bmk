@@ -1,15 +1,14 @@
-/*
- * bmk_thread_services_target.h
- *
- *  Created on: Feb 23, 2018
- *      Author: ballance
- */
 
-#ifndef INCLUDED_BMK_THREAD_SERVICES_TARGET_PTHREAD_H
-#define INCLUDED_BMK_THREAD_SERVICES_TARGET_PTHREAD_H
+#ifndef INCLUDED_BMK_PTHREAD_THREAD_SERVICES_H
+#define INCLUDED_BMK_PTHREAD_THREAD_SERVICES_H
 #include "bmk_thread_types.h"
 #include <pthread.h>
 #include <ucontext.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 typedef struct bmk_thread_pthread_s {
 	// We want our own user threads for this
@@ -32,4 +31,7 @@ typedef bmk_mutex_pthread_t bmk_mutex_t;
 typedef bmk_cond_pthread_t bmk_cond_t;
 
 
-#endif /* INCLUDED_BMK_THREAD_SERVICES_TARGET_RISCV_H */
+#ifdef __cplusplus
+}
+#endif
+#endif /* INCLUDED_BMK_PTHREAD_THREAD_SERVICES_H */

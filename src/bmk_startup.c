@@ -10,7 +10,6 @@
 #include "bmk_core_info.h"
 
 // Called for the
-extern void bmk_main(void);
 
 /**
  *
