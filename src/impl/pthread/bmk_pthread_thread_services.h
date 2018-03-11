@@ -13,9 +13,10 @@ extern "C" {
 typedef struct bmk_thread_pthread_s {
 	// We want our own user threads for this
 	ucontext_t					ctxt;
+	uint64_t					procmask;
 	bmk_thread_main_f			main_f;
 	void						*main_ud;
-	struct bmk_thread_core_s	*next; //
+	struct bmk_thread_pthread_s *next; //
 } bmk_thread_pthread_t;
 
 typedef struct bmk_mutex_pthread_s {

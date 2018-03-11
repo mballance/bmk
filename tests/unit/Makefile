@@ -32,6 +32,9 @@ MK_INCLUDES += $(BMK_DIR)/src/impl/pthread/pthread.mk
 CXXFLAGS += $(foreach dir,$(SRC_DIRS),-I$(dir))
 CFLAGS += $(foreach dir,$(SRC_DIRS),-I$(dir))
 
+CFLAGS += -g
+CXXFLAGS += -g
+
 EXE_TARGETS += unittest$(EXEEXT)
 
 UNIT_TEST_OBJ = $(UNIT_TEST_SRC_NOTDIR:.cpp=.o) gtest-all.o gtest_main.o
