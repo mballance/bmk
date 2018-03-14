@@ -15,6 +15,7 @@
 extern "C" {
 #endif
 
+typedef uint64_t bmk_cpuset_t;
 
 /**
  * bmk_thread_init()
@@ -29,10 +30,28 @@ void bmk_thread_init(
 		void				*ud);
 
 /**
+ * bmk_thread_init_procmask()
+ *
+ * Initalizes a thread with a stack and thread-main function
+ */
+void bmk_thread_init_cpuset(
+		bmk_thread_t		*t,
+		void				*stk,
+		uint32_t			stk_sz,
+		bmk_thread_main_f	main_f,
+		void				*ud,
+		bmk_cpuset_t		cpuset);
+
+/**
  * Causes the current core to select and run another
  * thread if one exists
  */
 void bmk_thread_yield(void);
+
+/**
+ * Wait for the specified thread to end
+ */
+void bmk_thread_join(bmk_thread_t *t);
 
 /**
  * Moves the thread to the runnable list for core CID

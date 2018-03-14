@@ -24,10 +24,12 @@ static core_data_t			*prv_cores = 0;
 
 
 void bmk_int_release_nonprimary_cores(void) {
+	fprintf(stdout, "--> bmk_int_release_nonprimary_cores\n");
 	pthread_mutex_lock(&prv_global_mutex);
 	prv_global_release = 1;
 	pthread_cond_broadcast(&prv_global_cond);
 	pthread_mutex_unlock(&prv_global_mutex);
+	fprintf(stdout, "<-- bmk_int_release_nonprimary_cores\n");
 }
 
 core_data_t *bmk_pthread_get_core_data(void) {
@@ -42,20 +44,18 @@ void *bmk_pthread_core_main(void *ud) {
 	pthread_setspecific(prv_key, core_data);
 
 	// Wait to be released
+	fprintf(stdout, "--> wait unlock procid=%d\n", core_data->procid);
 	pthread_mutex_lock(&prv_global_mutex);
 	while (prv_global_release == 0) {
 		pthread_cond_wait(&prv_global_cond, &prv_global_mutex);
 	}
 	pthread_mutex_unlock(&prv_global_mutex);
+	fprintf(stdout, "<-- wait unlock procid=%d\n", core_data->procid);
 
 
-	//
-	while (1) {
-		uint32_t is_running = 0;
-
-	}
-
+	fprintf(stdout, "--> call non-zero main procid=%d\n", core_data->procid);
 	bmk_startup(core_data->procid); // This is the main thread
+	fprintf(stdout, "<-- call non-zero main procid=%d\n", core_data->procid);
 
 	free(core_data);
 	return 0;
@@ -63,6 +63,10 @@ void *bmk_pthread_core_main(void *ud) {
 
 uint32_t bmk_get_nprocs(void) {
 	return prv_nprocs;
+}
+
+core_data_t *bmk_get_core_data(void) {
+	return (core_data_t *)pthread_getspecific(prv_key);
 }
 
 uint32_t bmk_get_procid(void) {
@@ -93,10 +97,12 @@ void bmk_pthread_main(uint32_t n_cores) {
 			prv_cores = core_data;
 			last_core_data = core_data;
 		} else {
+			fprintf(stdout, "--> Create core%d\n", i);
 			pthread_create(&core_data->thread, 0,
 					&bmk_pthread_core_main, core_data);
 			last_core_data->next = core_data;
 			last_core_data = core_data;
+			fprintf(stdout, "<-- Create core%d\n", i);
 		}
 	}
 
@@ -106,7 +112,7 @@ void bmk_pthread_main(uint32_t n_cores) {
 		last_core_data = last_core_data->next;
 	}
 
-	bmk_main(); // This is the main thread
+	bmk_startup(0); // This is the main thread
 
 	// TODO: Once the main thread exits, notify the others that we're done
 

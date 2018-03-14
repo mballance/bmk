@@ -16,6 +16,7 @@ typedef struct bmk_thread_pthread_s {
 	uint64_t					procmask;
 	bmk_thread_main_f			main_f;
 	void						*main_ud;
+	uint32_t					dead;
 	struct bmk_thread_pthread_s *next; //
 } bmk_thread_pthread_t;
 
