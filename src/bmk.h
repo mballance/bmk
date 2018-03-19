@@ -24,6 +24,12 @@ uint32_t bmk_get_nprocs(void);
  */
 uint32_t bmk_get_procid(void);
 
+/**
+ * bmk_get_clusterid()
+ *
+ *
+ */
+
 typedef void (*bmk_irq_handler_f)(void *ud, uint32_t id);
 
 /**

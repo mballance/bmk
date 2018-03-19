@@ -29,6 +29,14 @@ void bmk_pthread_scheduler_add2ready(bmk_thread_pthread_t *t) {
 	pthread_mutex_unlock(&prv_scheduler.mutex);
 }
 
+void bmk_pthread_scheduler_block(bmk_thread_pthread_t *t) {
+
+}
+
+void bmk_pthread_scheduler_unblock(bmk_thread_pthread_t *t) {
+
+}
+
 void bmk_pthread_scheduler_thread_exit(bmk_thread_pthread_t *t) {
 	bmk_thread_pthread_t *next = 0;
 	// TODO: free data structure associated with thread
@@ -102,6 +110,7 @@ void bmk_pthread_scheduler_reschedule(core_data_t *core, uint32_t wait) {
 	if (new_thread) {
 		bmk_thread_pthread_t *old = core->active_thread;
 		// If there's a new active thread, notify others
+		// TODO: notify change in active list
 		pthread_mutex_lock(&prv_scheduler.mutex);
 		pthread_cond_broadcast(&prv_scheduler.cond);
 		pthread_mutex_unlock(&prv_scheduler.mutex);
@@ -116,6 +125,7 @@ void bmk_pthread_scheduler_reschedule(core_data_t *core, uint32_t wait) {
 	} else if (wait) {
 		// Wait for the scheduler state to change
 		fprintf(stdout, "--> wait for scheduler state change %d\n", wait);
+		// TODO: wait for a change in the active list
 		pthread_mutex_lock(&prv_scheduler.mutex);
 		pthread_cond_wait(&prv_scheduler.cond, &prv_scheduler.mutex);
 		pthread_mutex_unlock(&prv_scheduler.mutex);
@@ -132,6 +142,7 @@ void bmk_pthread_scheduler_reschedule(core_data_t *core, uint32_t wait) {
 
 static bmk_thread_pthread_t *select_next_thread(uint32_t procid) {
 	bmk_thread_pthread_t *t = 0, *tl = 0;
+	// TODO: lock the scheduler list
 	pthread_mutex_lock(&prv_scheduler.mutex);
 
 	// Now, search for the next thread
@@ -162,6 +173,7 @@ static bmk_thread_pthread_t *select_next_thread(uint32_t procid) {
 		tl = tl->next;
 	}
 
+	// TODO: unlock the scheduler list
 	pthread_mutex_unlock(&prv_scheduler.mutex);
 
 	return t;

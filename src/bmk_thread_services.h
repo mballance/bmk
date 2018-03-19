@@ -8,6 +8,7 @@
 #ifndef INCLUDED_BMK_THREAD_SERVICES_H
 #define INCLUDED_BMK_THREAD_SERVICES_H
 #include <stdint.h>
+#include "bmk_int_context.h"
 #include "bmk_thread_types.h"
 #include "bmk_thread_services_target.h"
 
@@ -15,7 +16,34 @@
 extern "C" {
 #endif
 
+typedef int32_t (*bmk_thread_main_f)(void *ud);
+
 typedef uint64_t bmk_cpuset_t;
+
+static inline void bmk_cpuset_set(uint32_t cpu, bmk_cpuset_t *cpuset) {
+	*cpuset |= (1 << cpu);
+}
+
+static inline uint32_t bmk_cpuset_isset(uint32_t cpu, bmk_cpuset_t *cpuset) {
+	return (*cpuset & (1 << cpu));
+}
+
+static inline void bmk_cpuset_clr(uint32_t cpu, bmk_cpuset_t *cpuset) {
+	*cpuset &= ~(1 << cpu);
+}
+
+static inline void bmk_cpuset_zero(bmk_cpuset_t *cpuset) {
+	*cpuset = 0;
+}
+
+typedef struct bmk_thread_s {
+	bmk_context_t			ctxt;
+	bmk_cpuset_t			procmask;
+	bmk_thread_main_f		main_f;
+	void					*main_ud;
+	uint32_t				state;
+	struct bmk_thread_s		*next;
+} bmk_thread_t;
 
 /**
  * bmk_thread_init()
@@ -76,6 +104,8 @@ void bmk_cond_init(bmk_cond_t *c);
 void bmk_cond_wait(bmk_cond_t *c, bmk_mutex_t *m);
 
 void bmk_cond_signal(bmk_cond_t *c);
+
+void bmk_cond_signal_all(bmk_cond_t *c);
 
 
 #ifdef __cplusplus

@@ -24,5 +24,7 @@ void bmk_pthread_scheduler_add2ready(bmk_thread_pthread_t *t);
 
 void bmk_pthread_scheduler_thread_exit(bmk_thread_pthread_t *t);
 
+void bmk_pthread_scheduler_block(bmk_thread_pthread_t *t);
+
 
 #endif /* SRC_IMPL_PTHREAD_BMK_PTHREAD_SCHEDULER_H_ */

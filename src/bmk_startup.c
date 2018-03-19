@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "bmk.h"
-#include "bmk_int.h"
+#include "bmk_int_sys.h"
 #include "bmk_core_info.h"
 
 // Called for the
@@ -32,7 +32,7 @@ void bmk_startup(uint32_t cid) {
 
 		// Unblock non-primary cores
 		fprintf(stdout, "--> bmk_int_release_nonprimary_cores\n");
-		bmk_int_release_nonprimary_cores();
+		bmk_sys_release_nonprimary_cores();
 		fprintf(stdout, "<-- bmk_int_release_nonprimary_cores\n");
 
 		// Wait for non-primary cores to wake up and register
@@ -56,14 +56,9 @@ void bmk_startup(uint32_t cid) {
 		_bmk_core_info[cid].active = 1;
 
 		// We enter with a stack, which we must now associate with a thread (?)
-//		while (1) { }
-//		thread_main(cid);
-		// Continue rescheduling threads on non-primary cores
-		// while main thread is alive
 		bmk_pthread_scheduler_nonprimary();
 	}
 }
-
 
 
 

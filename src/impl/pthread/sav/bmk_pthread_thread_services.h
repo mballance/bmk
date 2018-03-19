@@ -21,10 +21,14 @@ typedef struct bmk_thread_pthread_s {
 } bmk_thread_pthread_t;
 
 typedef struct bmk_mutex_pthread_s {
-
+	uint32_t					lock;
+	bmk_thread_pthread_t		*owner;
+	bmk_thread_pthread_t		*waiters;
 } bmk_mutex_pthread_t;
 
 typedef struct bmk_cond_pthread_s {
+	uint32_t					lock;
+	bmk_thread_pthread_t		*waiters;
 
 } bmk_cond_pthread_t;
 
