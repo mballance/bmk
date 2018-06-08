@@ -5,19 +5,23 @@
  *      Author: ballance
  */
 #include "bmk_impl_sys_pthread.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct bmk_impl_sys_pthread_data_s {
 	uint32_t				prv_nprocs;
+	uint32_t				main_core_active;
 	pthread_key_t			prv_key;
 	pthread_mutex_t			prv_global_mutex;
 	pthread_cond_t			prv_global_cond;
 	uint32_t				prv_global_release;
 	pthread_mutex_t			event_mutex;
-	pthread_mutex_t			event_cond;
-	bmk_core_data_pthread_t	*prv_cores = 0;
+	pthread_cond_t			event_cond;
+	bmk_core_data_t			*prv_cores;
 } bmk_impl_sys_pthread_data_t;
 
-static bmk_impl_sys_pthread_data_t 		prv_impl_data;
+static bmk_impl_sys_pthread_data_t 		prv_impl_data = {0};
 
 void bmk_sys_release_nonprimary_cores(void) {
 	fprintf(stdout, "--> bmk_int_release_nonprimary_cores\n");
@@ -59,10 +63,27 @@ uint32_t bmk_get_procid(void) {
 	return core_data->base.procid;
 }
 
+bmk_core_data_t *bmk_sys_get_core_data(void) {
+	bmk_core_data_pthread_t *core_data =
+			(bmk_core_data_pthread_t *)pthread_getspecific(prv_impl_data.prv_key);
+
+	return &core_data->base;
+}
+
+uint32_t bmk_sys_main_core_active(void) {
+	uint32_t ret;
+
+	pthread_mutex_lock(&prv_impl_data.prv_global_mutex);
+	ret = prv_impl_data.main_core_active;
+	pthread_mutex_unlock(&prv_impl_data.prv_global_mutex);
+
+	return ret;
+}
+
 // This function is called for all non-primary cores
 static void *bmk_pthread_core_main(void *ud) {
 	bmk_core_data_pthread_t *core_data = (bmk_core_data_pthread_t *)ud;
-	bmk_core_data_pthread_t *primary_core = prv_impl_data.prv_cores;
+//	bmk_core_data_pthread_t *primary_core = prv_impl_data.prv_cores;
 	pthread_setspecific(prv_impl_data.prv_key, core_data);
 
 	// Wait to be released
@@ -86,11 +107,12 @@ static void *bmk_pthread_core_main(void *ud) {
 
 void bmk_pthread_main(uint32_t n_cores) {
 	uint32_t i;
-	bmk_core_data_pthread_t *last_core_data = 0;
+	bmk_core_data_t *last_core_data = 0;
 
 	memset(&prv_impl_data, 0, sizeof(bmk_impl_sys_pthread_data_t));
 
 	prv_impl_data.prv_nprocs = n_cores;
+	prv_impl_data.main_core_active = 1;
 
 	pthread_mutex_init(&prv_impl_data.prv_global_mutex, 0);
 	pthread_cond_init(&prv_impl_data.prv_global_cond, 0);
@@ -114,25 +136,29 @@ void bmk_pthread_main(uint32_t n_cores) {
 		if (i == 0) {
 			pthread_setspecific(prv_impl_data.prv_key, core_data);
 			core_data->thread = pthread_self();
-			prv_impl_data.prv_cores = core_data;
-			last_core_data = core_data;
+			prv_impl_data.prv_cores = &core_data->base;
+			last_core_data = &core_data->base;
 		} else {
 			fprintf(stdout, "--> Create core%d\n", i);
 			pthread_create(&core_data->thread, 0,
 					&bmk_pthread_core_main, core_data);
-			last_core_data->base.next = core_data;
-			last_core_data = core_data;
+			last_core_data->next = &core_data->base;
+			last_core_data = &core_data->base;
 			fprintf(stdout, "<-- Create core%d\n", i);
 		}
 	}
 
 	// TODO: Wait for non-primary threads to start up
-	last_core_data = prv_impl_data.prv_cores->base.next;
+	last_core_data = (bmk_core_data_pthread_t *)prv_impl_data.prv_cores->next;
 	while (last_core_data) {
-		last_core_data = last_core_data->base.next;
+		last_core_data = last_core_data->next;
 	}
 
 	bmk_startup(0); // This is the main thread
+
+	pthread_mutex_lock(&prv_impl_data.prv_global_mutex);
+	prv_impl_data.main_core_active = 1;
+	pthread_mutex_unlock(&prv_impl_data.prv_global_mutex);
 
 	// TODO: Once the main thread exits, notify the others that we're done
 

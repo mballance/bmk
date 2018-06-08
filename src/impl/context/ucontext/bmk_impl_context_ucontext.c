@@ -5,9 +5,10 @@
  *      Author: ballance
  */
 #include "bmk_impl_context_ucontext.h"
+#include "bmk_thread_types.h"
 
 void bmk_context_makecontext(
-		ucontext_t			*ctxt,
+		bmk_context_t		*ctxt,
 		void				*stk,
 		uint32_t			stk_sz,
 		bmk_thread_main_f	main_f,

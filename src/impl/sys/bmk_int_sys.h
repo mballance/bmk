@@ -9,13 +9,13 @@
 #define SRC_IMPL_SYS_BMK_INT_SYS_H_
 #include "bmk_thread_services.h"
 
-typedef struct bmk_core_data_base_s {
+typedef struct bmk_core_data_s {
 	uint32_t					procid;
 	bmk_thread_t				*active_thread;
 	bmk_thread_t				main_thread;
 
-	struct bmk_core_data_base_s	*next;
-} bmk_core_data_base_t;
+	struct bmk_core_data_s		*next;
+} bmk_core_data_t;
 
 /**
  * Internal function called by the BMK core to release all non-primary cores
@@ -42,5 +42,12 @@ uint32_t bmk_get_nprocs(void);
  * Public function to return the current processor ID
  */
 uint32_t bmk_get_procid(void);
+
+/**
+ * Returns the core data for the active processor
+ */
+bmk_core_data_t *bmk_sys_get_core_data(void);
+
+uint32_t bmk_sys_main_core_active(void);
 
 #endif /* SRC_IMPL_SYS_BMK_INT_SYS_H_ */

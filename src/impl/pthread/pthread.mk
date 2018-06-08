@@ -10,6 +10,6 @@ BMK_PTHREAD_SRC = $(notdir $(wildcard $(BMK_PTHREAD_DIR)/*.c))
 else # Rules
 
 libbmk_pthread.o : $(BMK_PTHREAD_SRC:.c=.o)
-	$(Q)$(LD) -r -o $@ $^
+	$(Q)$(LD) -r -o $@ $(BMK_PTHREAD_SRC:c.=.o)
 
 endif

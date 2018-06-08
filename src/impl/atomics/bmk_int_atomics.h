@@ -12,7 +12,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#ifdef __cplusplus
+#endif
 
 /**
  * Internal function to initialize a memory location used for locking
@@ -31,6 +31,6 @@ void bmk_atomics_unlock(uint32_t *ptr);
 
 #ifdef __cplusplus
 }
-#ifdef __cplusplus
+#endif
 
 #endif /* SRC_IMPL_ATOMICS_BMK_INT_ATOMICS_H_ */

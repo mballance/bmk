@@ -8,12 +8,13 @@
 #ifndef SRC_IMPL_CONTEXT_BMK_INT_CONTEXT_H_
 #define SRC_IMPL_CONTEXT_BMK_INT_CONTEXT_H_
 #include "bmk_impl_context.h"
+#include "bmk_thread_types.h"
 
 void bmk_context_makecontext(
 		bmk_context_t		*ctxt,
 		void				*stk,
 		uint32_t			stk_sz,
-		void (*main_f)(void *),
+		bmk_thread_main_f	main_f,
 		void				*ud);
 
 void bmk_context_swapcontext(

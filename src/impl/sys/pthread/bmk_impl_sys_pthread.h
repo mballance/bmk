@@ -10,12 +10,16 @@
 #include "bmk_int_sys.h"
 #include <pthread.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct bmk_core_data_pthread_s {
-	bmk_core_data_base_t	base;
+	bmk_core_data_t			base;
 	pthread_t				thread;
 } bmk_core_data_pthread_t;
 
-typedef bmk_core_data_pthread_t bmk_core_data_t;
+// typedef bmk_core_data_pthread_t bmk_core_data_t;
 
 /**
  * bmk_pthread_main()
@@ -25,5 +29,8 @@ typedef bmk_core_data_pthread_t bmk_core_data_t;
 void bmk_pthread_main(uint32_t n_cores);
 
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* SRC_IMPL_SYS_PTHREAD_BMK_IMPL_SYS_PTHREAD_H_ */

@@ -5,7 +5,7 @@
  *      Author: ballance
  */
 #include "bmk.h"
-#include "bmk_pthread.h"
+#include "bmk_impl_sys_pthread.h"
 
 static void (*prv_bmk_main)(void) = 0;
 

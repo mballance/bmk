@@ -8,8 +8,7 @@
 #include "gtest/gtest.h"
 #include "bmk_unittest_int.h"
 #include "bmk.h"
-#include "bmk_pthread_thread_services.h"
-#include "bmk_pthread.h"
+#include "bmk_impl_sys_pthread.h"
 
 #define STKSIZE 16384
 
@@ -27,6 +26,7 @@ TEST(smoke,singlecore) {
 	ASSERT_EQ(smoke_bmk_main_called, true);
 }
 
+
 //*******************************************************************
 
 static int singlecore_1thread_func(void *ud) {
@@ -36,9 +36,9 @@ static int singlecore_1thread_func(void *ud) {
 }
 
 static void singlecore_1thread_main(void) {
-	bmk_thread_pthread_t	t;
-	uint8_t					*stk = (uint8_t *)malloc(STKSIZE);
-	bool					called = false;
+	bmk_thread_t	t;
+	uint8_t			*stk = (uint8_t *)malloc(STKSIZE);
+	bool			called = false;
 
 	fprintf(stdout, "called=%d\n", called);
 	fflush(stdout);
@@ -64,6 +64,10 @@ TEST(smoke,singlecore_1thread) {
 	fprintf(stdout, "<-- bmk_pthread_main()\n");
 }
 
+
+
+
+
 //*******************************************************************
 
 
@@ -80,11 +84,11 @@ static int singlecore_2thread_func2(void *ud) {
 }
 
 static void singlecore_2thread_main(void) {
-	bmk_thread_pthread_t	t1, t2;
-	uint8_t					*stk1 = (uint8_t *)malloc(STKSIZE);
-	uint8_t					*stk2 = (uint8_t *)malloc(STKSIZE);
-	bool					called1 = false;
-	bool					called2 = false;
+	bmk_thread_t	t1, t2;
+	uint8_t			*stk1 = (uint8_t *)malloc(STKSIZE);
+	uint8_t			*stk2 = (uint8_t *)malloc(STKSIZE);
+	bool			called1 = false;
+	bool				called2 = false;
 
 	bmk_thread_init(
 			&t1,
@@ -131,11 +135,11 @@ static int dualcore_2thread_func2(void *ud) {
 }
 
 static void dualcore_2thread_main(void) {
-	bmk_thread_pthread_t	t1, t2;
-	uint8_t					*stk1 = (uint8_t *)malloc(STKSIZE);
-	uint8_t					*stk2 = (uint8_t *)malloc(STKSIZE);
-	bool					called1 = false;
-	bool					called2 = false;
+	bmk_thread_t	t1, t2;
+	uint8_t			*stk1 = (uint8_t *)malloc(STKSIZE);
+	uint8_t			*stk2 = (uint8_t *)malloc(STKSIZE);
+	bool			called1 = false;
+	bool			called2 = false;
 
 	bmk_thread_init(
 			&t1,
@@ -184,11 +188,11 @@ static int dualcore_2thread_func2_2(void *ud) {
 }
 
 static void dualcore_2thread_main_2(void) {
-	bmk_thread_pthread_t	t1, t2;
-	uint8_t					*stk1 = (uint8_t *)malloc(STKSIZE);
-	uint8_t					*stk2 = (uint8_t *)malloc(STKSIZE);
-	bool					called1 = false;
-	bool					called2 = false;
+	bmk_thread_t	t1, t2;
+	uint8_t			*stk1 = (uint8_t *)malloc(STKSIZE);
+	uint8_t			*stk2 = (uint8_t *)malloc(STKSIZE);
+	bool			called1 = false;
+	bool			called2 = false;
 
 	bmk_thread_init_cpuset(
 			&t1,
@@ -225,4 +229,6 @@ TEST(smoke,dualcore_2thread_2) {
 	bmk_pthread_main(2);
 	fprintf(stdout, "<-- bmk_pthread_main(2)\n");
 }
+#ifdef UNDEFINED
+#endif
 

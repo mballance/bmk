@@ -27,7 +27,14 @@ SRC_DIRS += $(BUILD_DIR)/googletest-release-$(GOOGLETEST_VERSION)/googletest/inc
 BUILD_DIR := $(UNIT_TEST_DIR)/build
 
 MK_INCLUDES += $(BMK_DIR)/src/bmk.mk
-MK_INCLUDES += $(BMK_DIR)/src/impl/pthread/pthread.mk
+MK_INCLUDES += $(BMK_DIR)/src/impl/atomics/atomics.mk
+MK_INCLUDES += $(BMK_DIR)/src/impl/atomics/gcc/atomics_gcc.mk
+MK_INCLUDES += $(BMK_DIR)/src/impl/scheduler/scheduler.mk
+MK_INCLUDES += $(BMK_DIR)/src/impl/scheduler/simple/scheduler_simple.mk
+MK_INCLUDES += $(BMK_DIR)/src/impl/sys/sys.mk
+MK_INCLUDES += $(BMK_DIR)/src/impl/sys/pthread/sys_pthread.mk
+MK_INCLUDES += $(BMK_DIR)/src/impl/context/context.mk
+MK_INCLUDES += $(BMK_DIR)/src/impl/context/ucontext/ucontext.mk
 
 CXXFLAGS += $(foreach dir,$(SRC_DIRS),-I$(dir))
 CFLAGS += $(foreach dir,$(SRC_DIRS),-I$(dir))
@@ -50,6 +57,12 @@ vpath %.cc $(SRC_DIRS)
 
 all : do_build_run
 
+debug : $(BUILD_DIR)/googletest.unpack
+	if test ! -d $(BUILD_DIR); then mkdir -p $(BUILD_DIR); fi
+	$(MAKE) -j$(NUM_CORES) BUILD=true UNIT_TEST_DIR=$(UNIT_TEST_DIR) \
+		-C $(BUILD_DIR) -f $(UNIT_TEST_DIR)/Makefile __build
+	cd $(BUILD_DIR) ; gdb --args ./unittest$(EXEEXT) $(GTEST_ARGS)
+
 clean :
 	rm -rf build
 
@@ -59,7 +72,9 @@ do_build_run : $(BUILD_DIR)/googletest.unpack
 	$(MAKE) -j$(NUM_CORES) BUILD=true UNIT_TEST_DIR=$(UNIT_TEST_DIR) \
 		-C $(BUILD_DIR) -f $(UNIT_TEST_DIR)/Makefile _run
 
-_run : $(LIB_TARGETS) $(EXE_TARGETS)
+__build : $(LIB_TARGETS) $(EXE_TARGETS)
+
+_run : __build
 	./unittest$(EXEEXT)
 
 $(BUILD_DIR)/googletest.unpack : $(PACKAGES_DIR)/$(GOOGLETEST_ZIP)
@@ -72,7 +87,12 @@ $(PACKAGES_DIR)/$(GOOGLETEST_ZIP) :
 	cd $(PACKAGES_DIR) ; wget -O $(GOOGLETEST_ZIP) $(GOOGLETEST_URL)
 
 
-unittest$(EXEEXT) : $(UNIT_TEST_OBJ) libbmk.o libbmk_pthread.o
+unittest$(EXEEXT) : \
+	$(UNIT_TEST_OBJ) \
+	libbmk.o \
+	libbmk_ucontext.o \
+	libbmk_sys_pthread.o \
+	libbmk_scheduler_simple.o
 	$(CXX) -o $@ $^ -lpthread
 
 include $(MK_INCLUDES)

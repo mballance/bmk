@@ -7,13 +7,13 @@
 
 #ifndef SRC_IMPL_SCHEDULER_BMK_INT_SCHEDULER_H_
 #define SRC_IMPL_SCHEDULER_BMK_INT_SCHEDULER_H_
-//#include "bmk_impl_scheduler.h"
+#include "bmk_impl_scheduler.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct bmk_thread_t;
+// typedef struct bmk_thread_t;
 
 /**
  * Internal function called to initialize the scheduler
@@ -30,6 +30,17 @@ void bmk_scheduler_thread_new(bmk_thread_t *t);
  * This function does not return
  */
 void bmk_scheduler_thread_exit(bmk_thread_t *t);
+
+void bmk_scheduler_thread_block(bmk_thread_t *t);
+
+void bmk_scheduler_thread_unblock(bmk_thread_t *t);
+
+void bmk_scheduler_reschedule(void);
+
+/**
+ * Main function for a non-primary core
+ */
+void bmk_scheduler_nonprimary(void);
 
 #ifdef __cplusplus
 }
