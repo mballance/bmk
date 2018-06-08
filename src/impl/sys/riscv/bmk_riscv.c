@@ -8,6 +8,7 @@
 #include "bmk_config.h"
 
 uint32_t bmk_get_nprocs(void) {
+	// TODO: Should query devicetree
 	return BMK_NUM_CORES;
 }
 

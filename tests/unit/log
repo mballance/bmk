@@ -1,0 +1,62 @@
+if test ! -d /project/fun/bmk/bmk/tests/unit/build; then mkdir -p /project/fun/bmk/bmk/tests/unit/build; fi
+make BUILD=true UNIT_TEST_DIR=/project/fun/bmk/bmk/tests/unit \
+	-C /project/fun/bmk/bmk/tests/unit/build -f /project/fun/bmk/bmk/tests/unit/Makefile _build
+make[1]: Entering directory `/project/fun/bmk/bmk/tests/unit/build'
+cc -I/project/fun/bmk/bmk/tests/unit/src -I/project/fun/bmk/bmk/src/ -I/project/fun/bmk/bmk/src/impl/pthread/   -c -o bmk_pthread.o /project/fun/bmk/bmk/src/impl/pthread/bmk_pthread.c
+/project/fun/bmk/bmk/src/impl/pthread/bmk_pthread.c: In function ‘bmk_pthread_core_main’:
+/project/fun/bmk/bmk/src/impl/pthread/bmk_pthread.c:46:2: warning: incompatible implicit declaration of built-in function ‘free’ [enabled by default]
+  free(core_data);
+  ^
+/project/fun/bmk/bmk/src/impl/pthread/bmk_pthread.c: In function ‘bmk_pthread_main’:
+/project/fun/bmk/bmk/src/impl/pthread/bmk_pthread.c:67:43: warning: incompatible implicit declaration of built-in function ‘malloc’ [enabled by default]
+   core_data_t *core_data = (core_data_t *)malloc(sizeof(core_data_t));
+                                           ^
+/project/fun/bmk/bmk/src/impl/pthread/bmk_pthread.c:68:3: warning: incompatible implicit declaration of built-in function ‘memset’ [enabled by default]
+   memset(core_data, 0, sizeof(core_data_t));
+   ^
+/project/fun/bmk/bmk/src/impl/pthread/bmk_pthread.c:72:4: warning: passing argument 1 of ‘pthread_setspecific’ makes integer from pointer without a cast [enabled by default]
+    pthread_setspecific(&prv_key, core_data);
+    ^
+In file included from /project/fun/bmk/bmk/src/impl/pthread/bmk_thread_services_target.h:11:0,
+                 from /project/fun/bmk/bmk/src/impl/pthread/bmk_pthread.c:8:
+/usr/include/pthread.h:1125:12: note: expected ‘pthread_key_t’ but argument is of type ‘pthread_key_t *’
+ extern int pthread_setspecific (pthread_key_t __key,
+            ^
+cc -I/project/fun/bmk/bmk/tests/unit/src -I/project/fun/bmk/bmk/src/ -I/project/fun/bmk/bmk/src/impl/pthread/   -c -o bmk_pthread_thread_services.o /project/fun/bmk/bmk/src/impl/pthread/bmk_pthread_thread_services.c
+/project/fun/bmk/bmk/src/impl/pthread/bmk_pthread_thread_services.c: In function ‘bmk_thread_init’:
+/project/fun/bmk/bmk/src/impl/pthread/bmk_pthread_thread_services.c:34:2: warning: passing argument 2 of ‘makecontext’ from incompatible pointer type [enabled by default]
+  makecontext(&pt->ctxt, &bmk_pthread_thread_tramp, 1, pt);
+  ^
+In file included from /project/fun/bmk/bmk/src/impl/pthread/../pthread/bmk_thread_services_target.h:12:0,
+                 from /project/fun/bmk/bmk/src/impl/pthread/bmk_pthread_thread_services.c:7:
+/usr/include/ucontext.h:47:13: note: expected ‘void (*)(void)’ but argument is of type ‘void (*)(void *)’
+ extern void makecontext (ucontext_t *__ucp, void (*__func) (void),
+             ^
+ld -r -o libbmk_pthread.o bmk_pthread.o bmk_pthread_thread_services.o
+cc -I/project/fun/bmk/bmk/tests/unit/src -I/project/fun/bmk/bmk/src/ -I/project/fun/bmk/bmk/src/impl/pthread/   -c -o bmk_startup.o /project/fun/bmk/bmk/src/bmk_startup.c
+cc -I/project/fun/bmk/bmk/tests/unit/src -I/project/fun/bmk/bmk/src/ -I/project/fun/bmk/bmk/src/impl/pthread/   -c -o bmk_stack.o /project/fun/bmk/bmk/src/bmk_stack.c
+cc -I/project/fun/bmk/bmk/tests/unit/src -I/project/fun/bmk/bmk/src/ -I/project/fun/bmk/bmk/src/impl/pthread/   -c -o bmk_core_info.o /project/fun/bmk/bmk/src/bmk_core_info.c
+ld -r -o libbmk.o bmk_startup.o bmk_stack.o bmk_core_info.o
+g++ -o unittest libbmk.o libbmk_pthread.o
+/lib/../lib64/crt1.o: In function `_start':
+(.text+0x20): undefined reference to `main'
+libbmk.o: In function `bmk_startup':
+(.text+0x64): undefined reference to `bmk_mutex_init'
+libbmk.o: In function `bmk_startup':
+(.text+0x81): undefined reference to `bmk_cond_init'
+libbmk.o: In function `bmk_startup':
+(.text+0xd5): undefined reference to `bmk_main'
+libbmk_pthread.o: In function `bmk_pthread_core_main':
+(.text+0x52): undefined reference to `pthread_setspecific'
+libbmk_pthread.o: In function `bmk_get_procid':
+(.text+0xc7): undefined reference to `pthread_getspecific'
+libbmk_pthread.o: In function `bmk_pthread_main':
+(.text+0xf6): undefined reference to `pthread_key_create'
+libbmk_pthread.o: In function `bmk_pthread_main':
+(.text+0x145): undefined reference to `pthread_setspecific'
+libbmk_pthread.o: In function `bmk_pthread_main':
+(.text+0x172): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+make[1]: *** [unittest] Error 1
+make[1]: Leaving directory `/project/fun/bmk/bmk/tests/unit/build'
+make: *** [do_build] Error 2

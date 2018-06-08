@@ -1,0 +1,10 @@
+if test ! -d /project/fun/bmk/bmk/tests/unit/build; then mkdir -p /project/fun/bmk/bmk/tests/unit/build; fi
+make BUILD=true UNIT_TEST_DIR=/project/fun/bmk/bmk/tests/unit \
+	-C /project/fun/bmk/bmk/tests/unit/build -f /project/fun/bmk/bmk/tests/unit/Makefile _build
+make[1]: Entering directory `/project/fun/bmk/bmk/tests/unit/build'
+g++ -I/project/fun/bmk/bmk/tests/unit/src -I/project/fun/bmk/bmk/src/ -I/project/fun/bmk/bmk/src/impl/pthread/   -c -o bmk_unittest_main.o /project/fun/bmk/bmk/tests/unit/src/bmk_unittest_main.cpp
+/project/fun/bmk/bmk/tests/unit/src/bmk_unittest_main.cpp:8:25: fatal error: gtest/gtest.h: No such file or directory
+compilation terminated.
+make[1]: *** [bmk_unittest_main.o] Error 1
+make[1]: Leaving directory `/project/fun/bmk/bmk/tests/unit/build'
+make: *** [do_build] Error 2
