@@ -8,7 +8,7 @@
 #endif
 
 #ifndef BMK_C0_STACK_SZ
-#define BMK_C0_STACK_SZ 1024
+#define BMK_C0_STACK_SZ 512
 #endif
 
 #ifndef BMK_EX_STACK_SZ

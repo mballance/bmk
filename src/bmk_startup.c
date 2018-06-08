@@ -10,7 +10,7 @@
 #include "bmk_core_info.h"
 
 // Called for the
-extern void bmk_main(void);
+//extern void bmk_main(void);
 
 /**
  *
@@ -23,8 +23,9 @@ void bmk_startup(uint32_t cid) {
 		for (i=0; i<BMK_MAX_CORES; i++) {
 			_bmk_core_info[i].active = 0;
 			_bmk_core_info[i].ready_list = 0;
-			bmk_mutex_init(&_bmk_core_info[i].ready_list_mutex);
-			bmk_cond_init(&_bmk_core_info[i].ready_list_cond);
+// TODO
+//			bmk_mutex_init(&_bmk_core_info[i].ready_list_mutex);
+//			bmk_cond_init(&_bmk_core_info[i].ready_list_cond);
 		}
 
 		// Note that the primary core is active
@@ -45,7 +46,7 @@ void bmk_startup(uint32_t cid) {
 		}
 
 		// Call the real main for c0
-		bmk_main();
+//		bmk_main();
 	} else { // non-primary core
 
 		// Signal that we're active
@@ -53,7 +54,7 @@ void bmk_startup(uint32_t cid) {
 
 		// We enter with a stack, which we must now associate with a thread (?)
 		while (1) { }
-		thread_main(cid);
+//		thread_main(cid);
 	}
 }
 

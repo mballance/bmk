@@ -67,6 +67,19 @@ primary_startup:
   li t2, 0
   sw t2, 0(t1)
 
+// Begin test code
+  li x3, 0x60000000
+  li x4, 1
+1:
+  li x5, 0x02a5
+  sh x5, 0(x3)
+  sll x5, x4, 8
+  ori x5, x5, 0x05
+  sw x5, 0(x3)
+  addi x4, x4, 1
+  j 1b
+// End test code
+
   la sp, _bmk_c0_stack
   li t1, BMK_C0_STACK_SZ
   add sp, sp, t1
