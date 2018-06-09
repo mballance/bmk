@@ -22,7 +22,7 @@ typedef struct bmk_thread_s {
 	bmk_cpuset_t			procmask;
 	bmk_thread_main_f		main_f;
 	void					*main_ud;
-	uint32_t				state;
+	uint32_t				alive;
 	struct bmk_thread_s		*next;
 } bmk_thread_t;
 

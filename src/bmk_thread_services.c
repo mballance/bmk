@@ -17,6 +17,7 @@ static int32_t bmk_thread_tramp(void *ud) {
 	int32_t ret;
 
 	ret = t->main_f(t->main_ud);
+	t->alive = 0;
 
 	// Doesn't return
 	bmk_scheduler_thread_exit(t);
@@ -34,7 +35,7 @@ void bmk_thread_init(
 	t->main_f = main_f;
 	t->main_ud = ud;
 	t->procmask = 1; // Pin to core0 initially
-//	t->dead = 0; // TODO:
+	t->alive = 1;
 
 	bmk_context_makecontext(&t->ctxt, stk, stk_sz,
 			&bmk_thread_tramp, t);
@@ -53,7 +54,7 @@ void bmk_thread_init_cpuset(
 	t->main_f = main_f;
 	t->main_ud = ud;
 	t->procmask = cpuset;
-//	t->dead = 0; // TODO:
+	t->alive = 1;
 
 	bmk_context_makecontext(&t->ctxt, stk, stk_sz,
 			&bmk_thread_tramp, t);
@@ -71,17 +72,12 @@ void bmk_thread_yield(void) {
 }
 
 void bmk_thread_join(bmk_thread_t *t) {
-	// TODO:
-//	bmk_core_data_t *core_data = bmk_sys_get_core_data();
-//	fprintf(stdout, "--> bmk_thread_join %d\n", t->dead);
-//
-//	// The active thread could be running on a different
-//	// core than the target one
-//	while (!t->dead) {
-//		bmk_pthread_scheduler_reschedule(core_data, 1);
-//	}
-//
-//	fprintf(stdout, "<-- bmk_thread_join %d\n", t->dead);
+
+	fprintf(stdout, "--> bmk_thread_join: %p %d\n", t, t->alive);
+	while (t->alive) {
+		bmk_scheduler_reschedule();
+	}
+	fprintf(stdout, "<-- bmk_thread_join: %p %d\n", t, t->alive);
 }
 
 bmk_thread_t *bmk_thread_self(void) {
