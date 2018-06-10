@@ -48,6 +48,12 @@ uint32_t bmk_get_procid(void);
  */
 bmk_core_data_t *bmk_sys_get_core_data(void);
 
+void bmk_sys_core_init(int cid);
+
 uint32_t bmk_sys_main_core_active(void);
+
+void bmk_sys_wait_proc_event(void);
+
+void bmk_sys_send_proc_event(uint8_t *mask, uint32_t mask_sz);
 
 #endif /* SRC_IMPL_SYS_BMK_INT_SYS_H_ */

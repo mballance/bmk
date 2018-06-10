@@ -47,7 +47,9 @@ void bmk_startup(uint32_t cid) {
 		}
 
 		// Call the real main for c0
+		fprintf(stdout, "--> bmk_main\n");
 		bmk_main();
+		fprintf(stdout, "<-- bmk_main\n");
 
 		// TODO: notify non-primary cores that they should exit
 	} else { // non-primary core
@@ -56,6 +58,7 @@ void bmk_startup(uint32_t cid) {
 		_bmk_core_info[cid].active = 1;
 
 		// We enter with a stack, which we must now associate with a thread (?)
+		bmk_sys_core_init(cid);
 		bmk_scheduler_nonprimary();
 	}
 }

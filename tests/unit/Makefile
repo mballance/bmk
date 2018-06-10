@@ -48,6 +48,11 @@ UNIT_TEST_OBJ = $(UNIT_TEST_SRC_NOTDIR:.cpp=.o) gtest-all.o gtest_main.o
 
 include $(MK_INCLUDES)
 
+LIBSTDCPP_DIR := $(dir $(shell $(CXX) -print-file-name=libstdc++.so))
+
+LD_LIBRARY_PATH := $(LIBSTDCPP_DIR):$(LD_LIBRARY_PATH)
+export LD_LIBRARY_PATH
+
 RULES := 1
 
 vpath %.c $(SRC_DIRS)
@@ -75,7 +80,7 @@ do_build_run : $(BUILD_DIR)/googletest.unpack
 __build : $(LIB_TARGETS) $(EXE_TARGETS)
 
 _run : __build
-	./unittest$(EXEEXT)
+	./unittest$(EXEEXT) $(GTEST_ARGS)
 
 $(BUILD_DIR)/googletest.unpack : $(PACKAGES_DIR)/$(GOOGLETEST_ZIP)
 	if test ! -d `dirname $@`; then mkdir -p `dirname $@`; fi
