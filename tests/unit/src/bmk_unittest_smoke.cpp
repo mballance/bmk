@@ -212,10 +212,6 @@ static void dualcore_2thread_main_2(void) {
 	// Wait for the threads to end
 	bmk_thread_join(&t1);
 	bmk_thread_join(&t2);
-//	bmk_thread_yield();
-//	bmk_thread_yield();
-//	bmk_thread_yield();
-//	bmk_thread_yield();
 
 	ASSERT_EQ(called1, true);
 	ASSERT_EQ(called2, true);
@@ -229,6 +225,111 @@ TEST(smoke,dualcore_2thread_2) {
 	bmk_pthread_main(2);
 	fprintf(stdout, "<-- bmk_pthread_main(2)\n");
 }
-#ifdef UNDEFINED
-#endif
+
+//*******************************************************************
+static bmk_mutex_t			pingpong_12_req_mutex;
+static bool					pingpong_12_req;
+static bmk_cond_t			pingpong_12_req_cond;
+static bmk_mutex_t			pingpong_21_ack_mutex;
+static bool					pingpong_21_ack;
+static bmk_cond_t			pingpong_21_ack_cond;
+static int					pingpong_count;
+
+static int dualcore_2thread_pingpong_func1_2(void *ud) {
+	*((bool *)ud) = true;
+	fprintf(stdout, "--> dualcore_2thread_pingpong_func1()\n");
+	for (int i=0; i<16; i++) {
+		fprintf(stdout, "--> thread1 send req\n");
+		bmk_mutex_lock(&pingpong_12_req_mutex);
+		pingpong_12_req = true;
+		bmk_cond_signal(&pingpong_12_req_cond);
+		bmk_mutex_unlock(&pingpong_12_req_mutex);
+		fprintf(stdout, "<-- thread1 send req\n");
+
+		// Now, wait for a response
+		fprintf(stdout, "--> thread1 wait ack\n");
+		while (true) {
+			bmk_mutex_lock(&pingpong_21_ack_mutex);
+			if (pingpong_21_ack) {
+				pingpong_21_ack = false;
+				pingpong_count++;
+				break;
+			} else {
+				bmk_cond_wait(&pingpong_21_ack_cond, &pingpong_21_ack_mutex);
+			}
+			bmk_mutex_unlock(&pingpong_21_ack_mutex);
+		}
+		fprintf(stdout, "<-- thread1 wait ack\n");
+	}
+	fprintf(stdout, "<-- dualcore_2thread_pingpong_func1()\n");
+	return 0;
+}
+
+static int dualcore_2thread_pingpong_func2_2(void *ud) {
+	*((bool *)ud) = true;
+	fprintf(stdout, "-- dualcore_2thread_pingpong_func2()\n");
+	for (int i=0; i<16; i++) {
+		fprintf(stdout, "--> thread2 wait req\n");
+		while (true) {
+			bmk_mutex_lock(&pingpong_12_req_mutex);
+			if (pingpong_12_req) {
+				pingpong_12_req = false;
+				break;
+			} else {
+				bmk_cond_wait(&pingpong_12_req_cond, &pingpong_12_req_mutex);
+			}
+			bmk_mutex_unlock(&pingpong_12_req_mutex);
+		}
+		fprintf(stdout, "<-- thread2 wait req\n");
+
+		fprintf(stdout, "--> thread2 send ack\n");
+		bmk_mutex_lock(&pingpong_21_ack_mutex);
+		pingpong_21_ack = true;
+		bmk_cond_signal(&pingpong_21_ack_cond);
+		bmk_mutex_unlock(&pingpong_21_ack_mutex);
+		fprintf(stdout, "<-- thread2 send ack\n");
+	}
+	return 0;
+}
+
+static void dualcore_2thread_pingpong_main_2(void) {
+	bmk_thread_t	t1, t2;
+	uint8_t			*stk1 = (uint8_t *)malloc(STKSIZE);
+	uint8_t			*stk2 = (uint8_t *)malloc(STKSIZE);
+	bool			called1 = false;
+	bool			called2 = false;
+
+	bmk_thread_init_cpuset(
+			&t1,
+			stk1,
+			STKSIZE,
+			&dualcore_2thread_pingpong_func1_2,
+			&called1,
+			(1 << 0));
+	bmk_thread_init_cpuset(
+			&t2,
+			stk2,
+			STKSIZE,
+			&dualcore_2thread_pingpong_func2_2,
+			&called2,
+			(1 << 1));
+
+	// Wait for the threads to end
+	bmk_thread_join(&t1);
+	bmk_thread_join(&t2);
+
+	ASSERT_EQ(called1, true);
+	ASSERT_EQ(called2, true);
+	ASSERT_EQ(pingpong_count, 16);
+}
+
+TEST(smoke,dualcore_2thread_pingpong) {
+	fprintf(stdout, "dualcore_2thread_pingpong\n");
+	set_bmk_main(&dualcore_2thread_pingpong_main_2);
+
+	fprintf(stdout, "--> bmk_pthread_main(2)\n");
+	bmk_pthread_main(2);
+	fprintf(stdout, "<-- bmk_pthread_main(2)\n");
+}
+
 
