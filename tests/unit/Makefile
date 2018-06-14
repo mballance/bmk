@@ -28,7 +28,8 @@ BUILD_DIR := $(UNIT_TEST_DIR)/build
 
 MK_INCLUDES += $(BMK_DIR)/src/bmk.mk
 MK_INCLUDES += $(BMK_DIR)/src/impl/atomics/atomics.mk
-MK_INCLUDES += $(BMK_DIR)/src/impl/atomics/gcc/atomics_gcc.mk
+# MK_INCLUDES += $(BMK_DIR)/src/impl/atomics/gcc/atomics_gcc.mk
+MK_INCLUDES += $(BMK_DIR)/src/impl/atomics/pthread/atomics_pthread.mk
 MK_INCLUDES += $(BMK_DIR)/src/impl/scheduler/scheduler.mk
 MK_INCLUDES += $(BMK_DIR)/src/impl/scheduler/simple/scheduler_simple.mk
 MK_INCLUDES += $(BMK_DIR)/src/impl/sys/sys.mk
@@ -68,6 +69,18 @@ debug : $(BUILD_DIR)/googletest.unpack
 		-C $(BUILD_DIR) -f $(UNIT_TEST_DIR)/Makefile __build
 	cd $(BUILD_DIR) ; gdb --args ./unittest$(EXEEXT) $(GTEST_ARGS)
 
+valgrind : $(BUILD_DIR)/googletest.unpack
+	if test ! -d $(BUILD_DIR); then mkdir -p $(BUILD_DIR); fi
+	$(MAKE) -j$(NUM_CORES) BUILD=true UNIT_TEST_DIR=$(UNIT_TEST_DIR) \
+		-C $(BUILD_DIR) -f $(UNIT_TEST_DIR)/Makefile __build
+	cd $(BUILD_DIR) ; valgrind --tool=memcheck ./unittest$(EXEEXT) $(GTEST_ARGS)
+
+helgrind : $(BUILD_DIR)/googletest.unpack
+	if test ! -d $(BUILD_DIR); then mkdir -p $(BUILD_DIR); fi
+	$(MAKE) -j$(NUM_CORES) BUILD=true UNIT_TEST_DIR=$(UNIT_TEST_DIR) \
+		-C $(BUILD_DIR) -f $(UNIT_TEST_DIR)/Makefile __build
+	cd $(BUILD_DIR) ; valgrind --tool=helgrind ./unittest$(EXEEXT) $(GTEST_ARGS)
+
 clean :
 	rm -rf build
 
@@ -97,7 +110,8 @@ unittest$(EXEEXT) : \
 	libbmk.o \
 	libbmk_ucontext.o \
 	libbmk_sys_pthread.o \
-	libbmk_scheduler_simple.o
+	libbmk_scheduler_simple.o \
+	libbmk_atomics_pthread.o
 	$(CXX) -o $@ $^ -lpthread
 
 include $(MK_INCLUDES)

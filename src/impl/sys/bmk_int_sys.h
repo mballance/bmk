@@ -8,11 +8,14 @@
 #ifndef SRC_IMPL_SYS_BMK_INT_SYS_H_
 #define SRC_IMPL_SYS_BMK_INT_SYS_H_
 #include "bmk_thread_services.h"
+#include "bmk_impl_sys.h"
 
 typedef struct bmk_core_data_s {
 	uint32_t					procid;
 	bmk_thread_t				*active_thread;
 	bmk_thread_t				main_thread;
+
+	bmk_core_impl_data_t		impl_data;
 
 	struct bmk_core_data_s		*next;
 } bmk_core_data_t;

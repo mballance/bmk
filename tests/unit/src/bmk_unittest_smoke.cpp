@@ -9,6 +9,7 @@
 #include "bmk_unittest_int.h"
 #include "bmk.h"
 #include "bmk_impl_sys_pthread.h"
+#include <valgrind/valgrind.h>
 
 #define STKSIZE 16384
 
@@ -103,10 +104,8 @@ static void singlecore_2thread_main(void) {
 			&singlecore_2thread_func2,
 			&called2);
 
-	bmk_thread_yield();
-	bmk_thread_yield();
-	bmk_thread_yield();
-	bmk_thread_yield();
+	bmk_thread_join(&t1);
+	bmk_thread_join(&t2);
 
 	ASSERT_EQ(called1, true);
 	ASSERT_EQ(called2, true);
@@ -253,6 +252,7 @@ static int dualcore_2thread_pingpong_func1_2(void *ud) {
 			if (pingpong_21_ack) {
 				pingpong_21_ack = false;
 				pingpong_count++;
+				bmk_mutex_unlock(&pingpong_21_ack_mutex);
 				break;
 			} else {
 				bmk_cond_wait(&pingpong_21_ack_cond, &pingpong_21_ack_mutex);
@@ -274,6 +274,7 @@ static int dualcore_2thread_pingpong_func2_2(void *ud) {
 			bmk_mutex_lock(&pingpong_12_req_mutex);
 			if (pingpong_12_req) {
 				pingpong_12_req = false;
+				bmk_mutex_unlock(&pingpong_12_req_mutex);
 				break;
 			} else {
 				bmk_cond_wait(&pingpong_12_req_cond, &pingpong_12_req_mutex);
@@ -298,6 +299,9 @@ static void dualcore_2thread_pingpong_main_2(void) {
 	uint8_t			*stk2 = (uint8_t *)malloc(STKSIZE);
 	bool			called1 = false;
 	bool			called2 = false;
+
+	VALGRIND_STACK_REGISTER(stk1, stk1+STKSIZE);
+	VALGRIND_STACK_REGISTER(stk2, stk2+STKSIZE);
 
 	bmk_thread_init_cpuset(
 			&t1,

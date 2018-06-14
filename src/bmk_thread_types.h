@@ -8,6 +8,7 @@
 #ifndef INCLUDED_BMK_THREAD_TYPES_H
 #define INCLUDED_BMK_THREAD_TYPES_H
 #include <stdint.h>
+#include "bmk_int_atomics.h"
 
 typedef int32_t (*bmk_thread_main_f)(void *ud);
 typedef uint64_t bmk_cpuset_t;
@@ -28,13 +29,13 @@ typedef struct bmk_thread_s {
 
 // TODO:
 typedef struct bmk_mutex_s {
-	uint32_t				lock;
+	bmk_atomic_t			lock;
 	bmk_thread_t			*owner;
 	bmk_thread_t			*waiters;
 } bmk_mutex_t;
 
 typedef struct bmk_cond_s {
-	uint32_t				lock;
+	bmk_atomic_t			lock;
 	bmk_thread_t			*waiters;
 } bmk_cond_t;
 

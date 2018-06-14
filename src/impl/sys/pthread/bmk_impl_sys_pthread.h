@@ -7,19 +7,19 @@
 
 #ifndef SRC_IMPL_SYS_PTHREAD_BMK_IMPL_SYS_PTHREAD_H_
 #define SRC_IMPL_SYS_PTHREAD_BMK_IMPL_SYS_PTHREAD_H_
-#include "bmk_int_sys.h"
 #include <pthread.h>
+
+typedef struct bmk_core_impl_data_s {
+	pthread_t				thread;
+	pthread_cond_t			proc_ev_cond;
+	pthread_mutex_t			proc_ev_mutex;
+} bmk_core_impl_data_t;
+
+#include "bmk_int_sys.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-typedef struct bmk_core_data_pthread_s {
-	bmk_core_data_t			base;
-	pthread_t				thread;
-} bmk_core_data_pthread_t;
-
-// typedef bmk_core_data_pthread_t bmk_core_data_t;
 
 /**
  * bmk_pthread_main()
