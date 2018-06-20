@@ -36,7 +36,7 @@ void bmk_scheduler_thread_block(bmk_thread_t *t);
 
 void bmk_scheduler_thread_unblock(bmk_thread_t *t);
 
-void bmk_scheduler_reschedule(void);
+void bmk_scheduler_reschedule(uint32_t wait);
 
 /**
  * Main function for a non-primary core

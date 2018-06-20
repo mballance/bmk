@@ -10,11 +10,14 @@
 #include "bmk_thread_services.h"
 #include "bmk_config.h"
 #define UNLOCK_KEY 0x55EA1234
+#include "bmk_impl_sys.h"
 
 typedef struct bmk_core_data_s {
 	uint32_t					procid;
 	bmk_thread_t				*active_thread;
 	bmk_thread_t				main_thread;
+
+	bmk_core_impl_data_t		impl_data;
 
 	struct bmk_core_data_s		*next;
 } bmk_core_data_t;
@@ -66,7 +69,14 @@ uint32_t bmk_get_procid(void);
  */
 bmk_core_data_t *bmk_sys_get_core_data(void);
 
+void bmk_sys_core_init(int cid);
+
 uint32_t bmk_sys_main_core_active(void);
 
+void bmk_sys_wait_proc_event(void);
+
+void bmk_sys_send_proc_event(uint8_t *mask, uint32_t mask_sz);
+
 #endif /* INCLUDED_BMK_INT_SYS_H */
+
 

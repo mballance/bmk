@@ -5,22 +5,24 @@
  *      Author: ballance
  */
 
-#ifndef SRC_IMPL_ATOMICS_GCC_BMK_IMPL_ATOMICS_GCC_H_
-#define SRC_IMPL_ATOMICS_GCC_BMK_IMPL_ATOMICS_GCC_H_
+#ifndef INCLUDED_BMK_IMPL_ATOMICS_GCC_H
+#define INCLUDED_BMK_IMPL_ATOMICS_GCC_H
 #include <stdint.h>
 #include <stdio.h>
+typedef uint32_t bmk_atomic_t;
+#include "bmk_int_atomics.h"
 
 /**
  * Internal function to initialize a memory location used for locking
  */
-static inline void bmk_atomics_init(uint32_t *ptr) {
+static inline void bmk_atomics_init(bmk_atomic_t *ptr) {
 	*ptr = 0;
 }
 
 /**
  * Internal function to lock a memory location
  */
-static inline void bmk_atomics_lock(uint32_t *ptr) {
+static inline void bmk_atomics_lock(bmk_atomic_t *ptr) {
 //	fprintf(stdout, "--> bmk_atomics_lock(%p)\n", ptr);
 //	fflush(stdout);
 	while (!__sync_bool_compare_and_swap(ptr, 0, 1)) { ; }
@@ -31,7 +33,7 @@ static inline void bmk_atomics_lock(uint32_t *ptr) {
 /**
  * Internal function to unlock a memory location
  */
-static inline void bmk_atomics_unlock(uint32_t *ptr) {
+static inline void bmk_atomics_unlock(bmk_atomic_t *ptr) {
 //	fprintf(stdout, "--> bmk_atomics_unlock(%p)\n", ptr);
 //	fflush(stdout);
 	while (!__sync_bool_compare_and_swap(ptr, 1, 0)) { ; }
@@ -40,4 +42,4 @@ static inline void bmk_atomics_unlock(uint32_t *ptr) {
 }
 
 
-#endif /* SRC_IMPL_ATOMICS_GCC_BMK_IMPL_ATOMICS_GCC_H_ */
+#endif /* INCLUDED_BMK_IMPL_ATOMICS_GCC_H */

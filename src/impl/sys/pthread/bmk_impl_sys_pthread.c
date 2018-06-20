@@ -58,16 +58,24 @@ uint32_t bmk_get_nprocs(void) {
 }
 
 uint32_t bmk_get_procid(void) {
-	bmk_core_data_pthread_t *core_data =
-			(bmk_core_data_pthread_t *)pthread_getspecific(prv_impl_data.prv_key);
-	return core_data->base.procid;
+	bmk_core_data_t *core_data =
+			(bmk_core_data_t *)pthread_getspecific(prv_impl_data.prv_key);
+	return core_data->procid;
+}
+
+void bmk_sys_core_init(int cid) {
+	bmk_core_data_t *core_data =
+			(bmk_core_data_t *)pthread_getspecific(prv_impl_data.prv_key);
+
+	bmk_context_getcontext(&core_data->main_thread.ctxt);
+	core_data->active_thread = &core_data->main_thread;
 }
 
 bmk_core_data_t *bmk_sys_get_core_data(void) {
-	bmk_core_data_pthread_t *core_data =
-			(bmk_core_data_pthread_t *)pthread_getspecific(prv_impl_data.prv_key);
+	bmk_core_data_t *core_data =
+			(bmk_core_data_t *)pthread_getspecific(prv_impl_data.prv_key);
 
-	return &core_data->base;
+	return core_data;
 }
 
 uint32_t bmk_sys_main_core_active(void) {
@@ -82,24 +90,25 @@ uint32_t bmk_sys_main_core_active(void) {
 
 // This function is called for all non-primary cores
 static void *bmk_pthread_core_main(void *ud) {
-	bmk_core_data_pthread_t *core_data = (bmk_core_data_pthread_t *)ud;
-//	bmk_core_data_pthread_t *primary_core = prv_impl_data.prv_cores;
+	bmk_core_data_t *core_data = (bmk_core_data_t *)ud;
+//	bmk_core_data_t *primary_core = prv_impl_data.prv_cores;
+	fprintf(stdout, "bmk_pthread_core_main %p\n", core_data);
 	pthread_setspecific(prv_impl_data.prv_key, core_data);
 
 	// Wait to be released
-	fprintf(stdout, "--> wait unlock procid=%d\n", core_data->base.procid);
+	fprintf(stdout, "--> wait unlock procid=%d\n", core_data->procid);
 	pthread_mutex_lock(&prv_impl_data.prv_global_mutex);
 	while (prv_impl_data.prv_global_release == 0) {
 		pthread_cond_wait(&prv_impl_data.prv_global_cond,
 				&prv_impl_data.prv_global_mutex);
 	}
 	pthread_mutex_unlock(&prv_impl_data.prv_global_mutex);
-	fprintf(stdout, "<-- wait unlock procid=%d\n", core_data->base.procid);
+	fprintf(stdout, "<-- wait unlock procid=%d\n", core_data->procid);
 
 
-	fprintf(stdout, "--> call non-zero main procid=%d\n", core_data->base.procid);
-	bmk_startup(core_data->base.procid); // This is the main thread
-	fprintf(stdout, "<-- call non-zero main procid=%d\n", core_data->base.procid);
+	fprintf(stdout, "--> call non-zero main procid=%d\n", core_data->procid);
+	bmk_startup(core_data->procid); // This is the main thread
+	fprintf(stdout, "<-- call non-zero main procid=%d\n", core_data->procid);
 
 	free(core_data);
 	return 0;
@@ -124,32 +133,36 @@ void bmk_pthread_main(uint32_t n_cores) {
 //	bmk_pthread_scheduler_init();
 
 	for (i=0; i<n_cores; i++) {
-		bmk_core_data_pthread_t *core_data = (bmk_core_data_pthread_t *)malloc(
-				sizeof(bmk_core_data_pthread_t));
-		memset(core_data, 0, sizeof(bmk_core_data_pthread_t));
-		core_data->base.procid = i;
+		bmk_core_data_t *core_data = (bmk_core_data_t *)malloc(
+				sizeof(bmk_core_data_t));
+		memset(core_data, 0, sizeof(bmk_core_data_t));
 
-		core_data->base.active_thread = &core_data->base.main_thread;
+		pthread_mutex_init(&core_data->impl_data.proc_ev_mutex, 0);
+		pthread_cond_init(&core_data->impl_data.proc_ev_cond, 0);
+
+		core_data->procid = i;
+
+		core_data->active_thread = &core_data->main_thread;
 
 		// Core main threads can only run on their target processor
-		core_data->base.main_thread.procmask = (1 << i);
+		core_data->main_thread.procmask = (1 << i);
 		if (i == 0) {
 			pthread_setspecific(prv_impl_data.prv_key, core_data);
-			core_data->thread = pthread_self();
-			prv_impl_data.prv_cores = &core_data->base;
-			last_core_data = &core_data->base;
+			core_data->impl_data.thread = pthread_self();
+			prv_impl_data.prv_cores = core_data;
+			last_core_data = core_data;
 		} else {
 			fprintf(stdout, "--> Create core%d\n", i);
-			pthread_create(&core_data->thread, 0,
+			pthread_create(&core_data->impl_data.thread, 0,
 					&bmk_pthread_core_main, core_data);
-			last_core_data->next = &core_data->base;
-			last_core_data = &core_data->base;
+			last_core_data->next = core_data;
+			last_core_data = core_data;
 			fprintf(stdout, "<-- Create core%d\n", i);
 		}
 	}
 
 	// TODO: Wait for non-primary threads to start up
-	last_core_data = (bmk_core_data_pthread_t *)prv_impl_data.prv_cores->next;
+	last_core_data = prv_impl_data.prv_cores->next;
 	while (last_core_data) {
 		last_core_data = last_core_data->next;
 	}
@@ -164,4 +177,26 @@ void bmk_pthread_main(uint32_t n_cores) {
 
 }
 
+void bmk_sys_wait_proc_event(void) {
+	bmk_core_data_t *core_data = bmk_sys_get_core_data();
+	fprintf(stdout, "--> bmk_sys_wait_proc_event core_data=%p\n", core_data);
+	pthread_mutex_lock(&core_data->impl_data.proc_ev_mutex);
+	pthread_cond_wait(&core_data->impl_data.proc_ev_cond,
+			&core_data->impl_data.proc_ev_mutex);
+	pthread_mutex_unlock(&core_data->impl_data.proc_ev_mutex);
+	fprintf(stdout, "<-- bmk_sys_wait_proc_event\n");
+}
+
+void bmk_sys_send_proc_event(uint8_t *mask, uint32_t mask_sz) {
+	bmk_core_data_t *core_data = prv_impl_data.prv_cores;
+
+	fprintf(stdout, "--> bmk_sys_send_proc_event\n");
+	while (core_data) {
+		pthread_mutex_lock(&core_data->impl_data.proc_ev_mutex);
+		pthread_cond_broadcast(&core_data->impl_data.proc_ev_cond);
+		pthread_mutex_unlock(&core_data->impl_data.proc_ev_mutex);
+		core_data = core_data->next;
+	}
+	fprintf(stdout, "<-- bmk_sys_send_proc_event\n");
+}
 

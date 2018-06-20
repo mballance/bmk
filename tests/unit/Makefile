@@ -28,7 +28,8 @@ BUILD_DIR := $(UNIT_TEST_DIR)/build
 
 MK_INCLUDES += $(BMK_DIR)/src/bmk.mk
 MK_INCLUDES += $(BMK_DIR)/src/impl/atomics/atomics.mk
-MK_INCLUDES += $(BMK_DIR)/src/impl/atomics/gcc/atomics_gcc.mk
+# MK_INCLUDES += $(BMK_DIR)/src/impl/atomics/gcc/atomics_gcc.mk
+MK_INCLUDES += $(BMK_DIR)/src/impl/atomics/pthread/atomics_pthread.mk
 MK_INCLUDES += $(BMK_DIR)/src/impl/scheduler/scheduler.mk
 MK_INCLUDES += $(BMK_DIR)/src/impl/scheduler/simple/scheduler_simple.mk
 MK_INCLUDES += $(BMK_DIR)/src/impl/sys/sys.mk
@@ -48,6 +49,11 @@ UNIT_TEST_OBJ = $(UNIT_TEST_SRC_NOTDIR:.cpp=.o) gtest-all.o gtest_main.o
 
 include $(MK_INCLUDES)
 
+LIBSTDCPP_DIR := $(dir $(shell $(CXX) -print-file-name=libstdc++.so))
+
+LD_LIBRARY_PATH := $(LIBSTDCPP_DIR):$(LD_LIBRARY_PATH)
+export LD_LIBRARY_PATH
+
 RULES := 1
 
 vpath %.c $(SRC_DIRS)
@@ -63,6 +69,18 @@ debug : $(BUILD_DIR)/googletest.unpack
 		-C $(BUILD_DIR) -f $(UNIT_TEST_DIR)/Makefile __build
 	cd $(BUILD_DIR) ; gdb --args ./unittest$(EXEEXT) $(GTEST_ARGS)
 
+valgrind : $(BUILD_DIR)/googletest.unpack
+	if test ! -d $(BUILD_DIR); then mkdir -p $(BUILD_DIR); fi
+	$(MAKE) -j$(NUM_CORES) BUILD=true UNIT_TEST_DIR=$(UNIT_TEST_DIR) \
+		-C $(BUILD_DIR) -f $(UNIT_TEST_DIR)/Makefile __build
+	cd $(BUILD_DIR) ; valgrind --tool=memcheck ./unittest$(EXEEXT) $(GTEST_ARGS)
+
+helgrind : $(BUILD_DIR)/googletest.unpack
+	if test ! -d $(BUILD_DIR); then mkdir -p $(BUILD_DIR); fi
+	$(MAKE) -j$(NUM_CORES) BUILD=true UNIT_TEST_DIR=$(UNIT_TEST_DIR) \
+		-C $(BUILD_DIR) -f $(UNIT_TEST_DIR)/Makefile __build
+	cd $(BUILD_DIR) ; valgrind --tool=helgrind ./unittest$(EXEEXT) $(GTEST_ARGS)
+
 clean :
 	rm -rf build
 
@@ -75,7 +93,7 @@ do_build_run : $(BUILD_DIR)/googletest.unpack
 __build : $(LIB_TARGETS) $(EXE_TARGETS)
 
 _run : __build
-	./unittest$(EXEEXT)
+	./unittest$(EXEEXT) $(GTEST_ARGS)
 
 $(BUILD_DIR)/googletest.unpack : $(PACKAGES_DIR)/$(GOOGLETEST_ZIP)
 	if test ! -d `dirname $@`; then mkdir -p `dirname $@`; fi
@@ -92,7 +110,8 @@ unittest$(EXEEXT) : \
 	libbmk.o \
 	libbmk_ucontext.o \
 	libbmk_sys_pthread.o \
-	libbmk_scheduler_simple.o
+	libbmk_scheduler_simple.o \
+	libbmk_atomics_pthread.o
 	$(CXX) -o $@ $^ -lpthread
 
 include $(MK_INCLUDES)

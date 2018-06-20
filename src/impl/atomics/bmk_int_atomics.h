@@ -17,17 +17,17 @@ extern "C" {
 /**
  * Internal function to initialize a memory location used for locking
  */
-void bmk_atomics_init(uint32_t *ptr);
+void bmk_atomics_init(bmk_atomic_t *ptr);
 
 /**
  * Internal function to lock a memory location
  */
-void bmk_atomics_lock(uint32_t *ptr);
+void bmk_atomics_lock(bmk_atomic_t *ptr);
 
 /**
  * Internal function to unlock a memory location
  */
-void bmk_atomics_unlock(uint32_t *ptr);
+void bmk_atomics_unlock(bmk_atomic_t *ptr);
 
 #ifdef __cplusplus
 }

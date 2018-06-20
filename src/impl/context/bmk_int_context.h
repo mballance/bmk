@@ -10,6 +10,13 @@
 #include "bmk_impl_context.h"
 #include "bmk_thread_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void bmk_context_getcontext(
+		bmk_context_t		*ctxt);
+
 void bmk_context_makecontext(
 		bmk_context_t		*ctxt,
 		void				*stk,
@@ -21,5 +28,8 @@ void bmk_context_swapcontext(
 		bmk_context_t		*from,
 		bmk_context_t		*to);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* SRC_IMPL_CONTEXT_BMK_INT_CONTEXT_H_ */
