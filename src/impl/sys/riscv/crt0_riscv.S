@@ -7,8 +7,17 @@
 
 #define UNLOCK_KEY 0x55EA1234
 
-.section .data
-c0_ready: .word 0
+#define TRACEPOINT(x) \
+  li t0, 0x60001000; \
+  li t1, 0x02a5; \
+  sh t1, 0(t0); \
+  li t1, x; \
+  sll t1, t1, 8; \
+  ori t1, t1, 0x05; \
+  sw t1, 0(t0);
+
+// .section .data
+// c0_ready: .word 0
 
 .section .text.start, "ax", @progbits
 .globl _start
@@ -55,35 +64,27 @@ _start:
   mv x30, x1
   mv x31, x1
 
+  TRACEPOINT(100)
+
 
   csrr t0, mhartid // HW Thread ID (core)
   bne t0, x0, non_primary_startup
+
   /**
    * Startup for the primary core
    */
 primary_startup:
-  // Ensure the other cores stay blocked
-  la t1, c0_ready
+
+  TRACEPOINT(200)
+  // Ensure the other cores stay blocked: bmk_sys_data.c0_ready_key = 0
+  la t1, bmk_sys_data
   li t2, 0
   sw t2, 0(t1)
 
-// Begin test code
-  li x3, 0x60000000
-  li x4, 1
-1:
-  li x5, 0x02a5
-  sh x5, 0(x3)
-  sll x5, x4, 8
-  ori x5, x5, 0x05
-  sw x5, 0(x3)
-  addi x4, x4, 1
-  j 1b
-// End test code
-
-  la sp, _bmk_c0_stack
-  li t1, BMK_C0_STACK_SZ
-  add sp, sp, t1
+  la sp, _stack_top
   add sp, sp, -8
+
+  TRACEPOINT(300)
 
   // Clear BSS
   la t1, _bss_start
@@ -97,43 +98,70 @@ zero_loop:
 
 zero_loop_end:
 
+  TRACEPOINT(400)
+
   // Run global initialization function
 //  call __libc_init_array
 
   // Call BMK startup
-  addi a0, t0, 0 // pass the CID
   jal ra, bmk_startup
+
+  TRACEPOINT(500)
+
+  // On return, reconfigure the stack and
+  // TODO: reconfigure stack
+  csrr t0, mhartid // HW Thread ID (core)
+  addi a0, t0, 0 // pass the CID
+  jal ra, bmk_level1_main
+
+  // On return, spin
+1:
+  TRACEPOINT(501)
+	j	1b
 
 /**
  * Startup for non-primary cores
  */
 non_primary_startup:
+//  TRACEPOINT(600)
+
+  // Kill some time to ensure C0 can initialize things
+  li t1, 0
+  li t2, 100
+1:
+  addi t1, t1, 1
+  bne t1, t2, 1b
+
+// TODO: just spin for now
+1:
+	j 1b
+
   // Select the appropriate stack
-  la sp, _bmk_c0_stack
-  add t1, x0, t0 //
-  li t2, BMK_EX_STACK_SZ
-  mul t1, t1, t2 // Calculate end of the exception stack
-  add sp, sp, t1
-  add sp, sp, -8
+//  la sp, _bmk_c0_stack
+//  add t1, x0, t0 //
+//  li t2, BMK_EX_STACK_SZ
+//  mul t1, t1, t2 // Calculate end of the exception stack
+//  add sp, sp, t1
+//  add sp, sp, -8
 
   // Wait for C0 to unblock us
   // We don't want to stomp on its initialization procedure
-  la t1, c0_ready
-  li t2, UNLOCK_KEY
-wait_c0:
-  lw t3, 0(t1)
-  bne t2, t3, wait_c0
+//  la t1, c0_ready
+//  li t2, UNLOCK_KEY
+//wait_c0:
+//  lw t3, 0(t1)
+//  bne t2, t3, wait_c0
 
-  // Call BMK startup
-  addi a0, t0, 0 // pass the CID
-  jal ra, bmk_startup
+//  // Call BMK startup
+//  addi a0, t0, 0 // pass the CID
+//  jal ra, bmk_startup
 
 .globl bmk_int_release_nonprimary_cores
 bmk_int_release_nonprimary_cores:
 	// Release the other cores
-	la t0, c0_ready
-	li t1, UNLOCK_KEY
-	sw t1, 0(t0)
+//	la t0, c0_ready
+//	li t1, UNLOCK_KEY
+//	sw t1, 0(t0)
 	ret
 
   .size  _start, .-_start

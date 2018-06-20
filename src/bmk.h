@@ -13,17 +13,6 @@
 extern "C" {
 #endif
 
-
-/**
- * bmk_get_nprocs()
- */
-uint32_t bmk_get_nprocs(void);
-
-/**
- * bmk_get_procid()
- */
-uint32_t bmk_get_procid(void);
-
 /**
  * bmk_get_clusterid()
  *

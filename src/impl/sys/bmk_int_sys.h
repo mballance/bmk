@@ -5,9 +5,11 @@
  *      Author: ballance
  */
 
-#ifndef SRC_IMPL_SYS_BMK_INT_SYS_H_
-#define SRC_IMPL_SYS_BMK_INT_SYS_H_
+#ifndef INCLUDED_BMK_INT_SYS_H
+#define INCLUDED_BMK_INT_SYS_H
 #include "bmk_thread_services.h"
+#include "bmk_config.h"
+#define UNLOCK_KEY 0x55EA1234
 
 typedef struct bmk_core_data_s {
 	uint32_t					procid;
@@ -16,6 +18,22 @@ typedef struct bmk_core_data_s {
 
 	struct bmk_core_data_s		*next;
 } bmk_core_data_t;
+
+typedef struct bmk_sys_data_s {
+	uint32_t					c0_ready_key;
+	uint32_t					core_release_mask[((BMK_MAX_CORES-1)/32)+1];
+	bmk_core_data_t				core_data[BMK_MAX_CORES];
+} bmk_sys_data_t;
+
+extern bmk_sys_data_t			bmk_sys_data;
+
+/**
+ * Called by boot code to execute the startup procedure
+ */
+void bmk_startup(void);
+
+void bmk_sys_init(void);
+
 
 /**
  * Internal function called by the BMK core to release all non-primary cores
@@ -50,4 +68,5 @@ bmk_core_data_t *bmk_sys_get_core_data(void);
 
 uint32_t bmk_sys_main_core_active(void);
 
-#endif /* SRC_IMPL_SYS_BMK_INT_SYS_H_ */
+#endif /* INCLUDED_BMK_INT_SYS_H */
+

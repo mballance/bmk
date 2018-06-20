@@ -8,6 +8,7 @@
 #ifndef SRC_IMPL_SCHEDULER_BMK_INT_SCHEDULER_H_
 #define SRC_IMPL_SCHEDULER_BMK_INT_SCHEDULER_H_
 #include "bmk_impl_scheduler.h"
+#include "bmk_thread_types.h"
 
 #ifdef __cplusplus
 extern "C" {

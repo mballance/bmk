@@ -9,8 +9,7 @@
 #include "bmk_int_context.h"
 #include "bmk_int_scheduler.h"
 #include "bmk_int_sys.h"
-#include <stdio.h>
-#include <string.h>
+#include "bmk_int_debug.h"
 
 static int32_t bmk_thread_tramp(void *ud) {
 	bmk_thread_t *t = (bmk_thread_t *)ud;
@@ -64,20 +63,20 @@ void bmk_thread_init_cpuset(
 
 void bmk_thread_yield(void) {
 	bmk_core_data_t *core_data = bmk_sys_get_core_data();
-	fprintf(stdout, "--> bmk_thread_yield: %d\n", core_data->procid);
+	bmk_debug("--> bmk_thread_yield: %d\n", core_data->procid);
 
 	bmk_scheduler_reschedule();
 
-	fprintf(stdout, "<-- bmk_thread_yield: %d\n", core_data->procid);
+	bmk_debug("<-- bmk_thread_yield: %d\n", core_data->procid);
 }
 
 void bmk_thread_join(bmk_thread_t *t) {
 
-	fprintf(stdout, "--> bmk_thread_join: %p %d\n", t, t->alive);
+	bmk_debug("--> bmk_thread_join: %p %d\n", t, t->alive);
 	while (t->alive) {
 		bmk_scheduler_reschedule();
 	}
-	fprintf(stdout, "<-- bmk_thread_join: %p %d\n", t, t->alive);
+	bmk_debug("<-- bmk_thread_join: %p %d\n", t, t->alive);
 }
 
 bmk_thread_t *bmk_thread_self(void) {
@@ -86,7 +85,8 @@ bmk_thread_t *bmk_thread_self(void) {
 }
 
 void bmk_mutex_init(bmk_mutex_t *m) {
-	memset(m, 0, sizeof(bmk_mutex_t));
+	m->owner = 0;
+	m->waiters = 0;
 	bmk_atomics_init(&m->lock);
 }
 
@@ -130,7 +130,7 @@ void bmk_mutex_unlock(bmk_mutex_t *m) {
 }
 
 void bmk_cond_init(bmk_cond_t *c) {
-	memset(c, 0, sizeof(bmk_cond_t));
+	c->waiters = 0;
 	bmk_atomics_init(&c->lock);
 }
 

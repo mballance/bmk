@@ -7,6 +7,8 @@ BMK_SRC_C = $(notdir $(wildcard $(BMK_SRC_DIR)/*.c))
 
 SRC_DIRS += $(BMK_SRC_DIR)
 
+BMK_DEPS += libbmk.o
+
 else # Rules
 
 libbmk.o : $(BMK_SRC_C:.c=.o)

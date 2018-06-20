@@ -4,11 +4,11 @@
  *  Created on: Mar 17, 2018
  *      Author: ballance
  */
-#include <stdio.h>
 #include <string.h>
 #include "bmk_thread_types.h"
 #include "bmk_int_atomics.h"
 #include "bmk_int_sys.h"
+#include "bmk_int_debug.h"
 
 typedef struct bmk_scheduler_simple_data_s {
 	uint32_t				lock;
@@ -40,30 +40,30 @@ static bmk_thread_t *bmk_simple_scheduler_get_next_thread(bmk_core_data_t *core_
 		t = t->next;
 	}
 
-	fprintf(stdout, "next_t = %p\n", next_t);
+	bmk_debug("next_t = %p\n", next_t);
 
 
 	return next_t;
 }
 
 void bmk_scheduler_init(void) {
-	fprintf(stdout, "--> bmk_scheduler_init()\n");
-	fprintf(stdout, "<-- bmk_scheduler_init()\n");
+	bmk_debug("--> bmk_scheduler_init()\n");
+	bmk_debug("<-- bmk_scheduler_init()\n");
 }
 
 void bmk_scheduler_thread_new(bmk_thread_t *t) {
-	fprintf(stdout, "--> bmk_scheduler_thread_new(%p)\n", t);
+	bmk_debug("--> bmk_scheduler_thread_new(%p)\n", t);
 	bmk_atomics_lock(&prv_data.lock);
 	t->next = prv_data.active_thread_l;
 	prv_data.active_thread_l = t;
 	bmk_atomics_unlock(&prv_data.lock);
-	fprintf(stdout, "<-- bmk_scheduler_thread_new()\n");
+	bmk_debug("<-- bmk_scheduler_thread_new()\n");
 }
 
 void bmk_scheduler_thread_exit(bmk_thread_t *t) {
 	bmk_core_data_t *core_data = bmk_sys_get_core_data();
 	bmk_thread_t *active_t=core_data->active_thread, *next_t;
-	fprintf(stdout, "--> bmk_scheduler_thread_exit()\n");
+	bmk_debug("--> bmk_scheduler_thread_exit()\n");
 	bmk_atomics_lock(&prv_data.lock);
 
 	next_t = bmk_simple_scheduler_get_next_thread(core_data);
@@ -71,26 +71,26 @@ void bmk_scheduler_thread_exit(bmk_thread_t *t) {
 
 	bmk_atomics_unlock(&prv_data.lock);
 
-	fprintf(stdout, "EXIT SWAP: %p => %p\n", active_t, core_data->active_thread);
+	bmk_debug("EXIT SWAP: %p => %p\n", active_t, core_data->active_thread);
 	bmk_context_swapcontext(&active_t->ctxt, &core_data->active_thread->ctxt);
 
-	fprintf(stdout, "<-- bmk_scheduler_thread_exit()\n");
+	bmk_debug("<-- bmk_scheduler_thread_exit()\n");
 }
 
 void bmk_scheduler_thread_block(bmk_thread_t *t) {
-	fprintf(stdout, "--> bmk_scheduler_thread_block\n");
+	bmk_debug("--> bmk_scheduler_thread_block\n");
 	// primarily informative. This will get added back later
-	fprintf(stdout, "<-- bmk_scheduler_thread_block\n");
+	bmk_debug("<-- bmk_scheduler_thread_block\n");
 }
 
 void bmk_scheduler_thread_unblock(bmk_thread_t *t) {
-	fprintf(stdout, "--> bmk_scheduler_thread_unblock\n");
+	bmk_debug("--> bmk_scheduler_thread_unblock\n");
 	// Add back to the active list
 	bmk_atomics_lock(&prv_data.lock);
 	t->next = prv_data.active_thread_l;
 	prv_data.active_thread_l = t;
 	bmk_atomics_unlock(&prv_data.lock);
-	fprintf(stdout, "<-- bmk_scheduler_thread_unblock\n");
+	bmk_debug("<-- bmk_scheduler_thread_unblock\n");
 }
 
 // Reschedule operates for a given core
@@ -101,18 +101,18 @@ void bmk_scheduler_reschedule(void) {
 
 	core_data->active_thread = 0;
 
-	fprintf(stdout, "--> bmk_scheduler_reschedule active=%p\n", active_t);
+	bmk_debug("--> bmk_scheduler_reschedule active=%p\n", active_t);
 	bmk_atomics_lock(&prv_data.lock);
 	// Add the active thread to the back of the list
 	t = prv_data.active_thread_l;
 
 	if (t) {
 		while (t->next) {
-			fprintf(stdout, "t=%p next=%p\n", t, t->next);
+			bmk_debug("t=%p next=%p\n", t, t->next);
 			t = t->next;
 		}
 
-		fprintf(stdout, "head t=%p\n", t);
+		bmk_debug("head t=%p\n", t);
 
 		// t wasn't null, but the next is
 		t->next = active_t;
@@ -124,18 +124,18 @@ void bmk_scheduler_reschedule(void) {
 
 	if (active_t != core_data->active_thread) {
 		bmk_atomics_unlock(&prv_data.lock);
-		fprintf(stdout, "SWAP: %p => %p\n", active_t, core_data->active_thread);
+		bmk_debug("SWAP: %p => %p\n", active_t, core_data->active_thread);
 		bmk_context_swapcontext(&active_t->ctxt, &core_data->active_thread->ctxt);
 	} else {
 		bmk_atomics_unlock(&prv_data.lock);
 	}
 
-	fprintf(stdout, "<-- bmk_scheduler_reschedule\n");
+	bmk_debug("<-- bmk_scheduler_reschedule\n");
 }
 
 
 void bmk_scheduler_nonprimary(void) {
-	fprintf(stdout, "--> bmk_scheduler_nonprimary()\n");
+	bmk_debug("--> bmk_scheduler_nonprimary()\n");
 	// This should act as 'slave'
 	while (1) {
 		uint32_t main_thread_active = 1;
@@ -170,7 +170,7 @@ void bmk_scheduler_nonprimary(void) {
 		}
 	}
 
-	fprintf(stdout, "<-- bmk_scheduler_nonprimary()\n");
+	bmk_debug("<-- bmk_scheduler_nonprimary()\n");
 }
 
 
