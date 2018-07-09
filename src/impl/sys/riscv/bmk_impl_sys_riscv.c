@@ -58,3 +58,11 @@ uint32_t bmk_sys_main_core_active(void) {
 	// TODO:
 }
 
+void bmk_sys_wait_proc_event(void) {
+	// TODO:
+}
+
+void bmk_sys_send_proc_event(uint8_t *mask, uint32_t mask_sz) {
+	// TODO:
+}
+

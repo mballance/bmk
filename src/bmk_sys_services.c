@@ -14,14 +14,19 @@ static bmk_level1_main_f	prv_level1_main_func = 0;
 static bmk_main_f			prv_main_func = 0;
 bmk_sys_data_t				bmk_sys_data;
 
+uint32_t					c0_ready_key;
+// Stack pointers for each core
+void						*core_stack[BMK_MAX_CORES];
+uint32_t					core_stack_sz[BMK_MAX_CORES];
+
 void bmk_sys_init(void) {
 	int i;
 
-	bmk_sys_data.c0_ready_key = 0;
-	for (i=0; i<((BMK_MAX_CORES-1)/32)+1; i++) {
-		bmk_sys_data.core_release_mask[i] = 0;
-	}
-	bmk_sys_data.core_release_mask[i] = 1;
+	c0_ready_key = 0;
+//	for (i=0; i<((BMK_MAX_CORES-1)/32)+1; i++) {
+//		bmk_sys_data.core_release_mask[i] = 0;
+//	}
+//	bmk_sys_data.core_release_mask[i] = 1;
 
 	for (i=0; i<BMK_MAX_CORES; i++) {
 		bmk_sys_data.core_data[i].procid = i;

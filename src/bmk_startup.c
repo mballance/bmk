@@ -29,7 +29,7 @@ void bmk_startup(void) {
 	// This function will initialize enabled cores with the application stack
 	bmk_level0_main();
 
-	// Before exiting, notify nonprimary cores that we're ready for them
+	// TODO: Before exiting, notify nonprimary cores that we're ready for them
 
 
 //	uint32_t i, nprocs;

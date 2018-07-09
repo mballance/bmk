@@ -5,8 +5,8 @@
  *      Author: ballance
  */
 
-#ifndef SRC_IMPL_ATOMICS_BMK_INT_ATOMICS_H_
-#define SRC_IMPL_ATOMICS_BMK_INT_ATOMICS_H_
+#ifndef INCLUDED_BMK_INT_ATOMICS_H
+#define INCLUDED_BMK_INT_ATOMICS_H
 #include <stdint.h>
 #include "bmk_impl_atomics.h"
 
@@ -33,4 +33,4 @@ void bmk_atomics_unlock(bmk_atomic_t *ptr);
 }
 #endif
 
-#endif /* SRC_IMPL_ATOMICS_BMK_INT_ATOMICS_H_ */
+#endif /* INCLUDED_BMK_INT_ATOMICS_H */

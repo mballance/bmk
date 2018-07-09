@@ -8,6 +8,7 @@
 #ifndef INCLUDED_BMK_SYS_SERVICES_H
 #define INCLUDED_BMK_SYS_SERVICES_H
 #include <stdint.h>
+#include "bmk_int_atomics.h"
 
 /**
  * bmk_get_nprocs()

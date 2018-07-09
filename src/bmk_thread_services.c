@@ -92,8 +92,7 @@ void bmk_mutex_init(bmk_mutex_t *m) {
 
 void bmk_mutex_lock(bmk_mutex_t *m) {
 	// Lock access to mutex fields
-	fprintf(stdout, "--> bmk_mutex_lock %p\n", m);
-	fflush(stdout);
+	bmk_debug("--> bmk_mutex_lock %p\n", m);
 	bmk_atomics_lock(&m->lock);
 	if (!m->owner) {
 		// Now we own it
@@ -123,13 +122,11 @@ void bmk_mutex_lock(bmk_mutex_t *m) {
 
 	// Unlock
 	bmk_atomics_unlock(&m->lock);
-	fprintf(stdout, "<-- bmk_mutex_lock %p\n", m);
-	fflush(stdout);
+	bmk_debug("<-- bmk_mutex_lock %p\n", m);
 }
 
 void bmk_mutex_unlock(bmk_mutex_t *m) {
-	fprintf(stdout, "--> bmk_mutex_unlock %p\n", m);
-	fflush(stdout);
+	bmk_debug("--> bmk_mutex_unlock %p\n", m);
 	bmk_atomics_lock(&m->lock);
 	m->owner = 0;
 	while (m->waiters) {
@@ -138,8 +135,7 @@ void bmk_mutex_unlock(bmk_mutex_t *m) {
 		bmk_scheduler_thread_unblock(t);
 	}
 	bmk_atomics_unlock(&m->lock);
-	fprintf(stdout, "<-- bmk_mutex_unlock %p\n", m);
-	fflush(stdout);
+	bmk_debug("<-- bmk_mutex_unlock %p\n", m);
 }
 
 void bmk_cond_init(bmk_cond_t *c) {
@@ -149,8 +145,7 @@ void bmk_cond_init(bmk_cond_t *c) {
 
 void bmk_cond_wait(bmk_cond_t *c, bmk_mutex_t *m) {
 	bmk_thread_t *this_t = bmk_thread_self();
-	fprintf(stdout, "--> bmk_cond_wait cond=%p\n", c);
-	fflush(stdout);
+	bmk_debug("--> bmk_cond_wait cond=%p\n", c);
 
 	bmk_atomics_lock(&c->lock);
 	this_t->next = c->waiters;
@@ -162,15 +157,13 @@ void bmk_cond_wait(bmk_cond_t *c, bmk_mutex_t *m) {
 	bmk_scheduler_thread_block(this_t);
 	bmk_mutex_lock(m);
 
-	fprintf(stdout, "<-- bmk_cond_wait cond=%p\n", c);
-	fflush(stdout);
+	bmk_debug("<-- bmk_cond_wait cond=%p\n", c);
 }
 
 void bmk_cond_signal(bmk_cond_t *c) {
 	bmk_thread_t *unblock_thread = 0;
 
-	fprintf(stdout, "--> bmk_cond_signal cond=%p\n", c);
-	fflush(stdout);
+	bmk_debug("--> bmk_cond_signal cond=%p\n", c);
 
 	bmk_atomics_lock(&c->lock);
 	if (c->waiters) {
@@ -181,8 +174,7 @@ void bmk_cond_signal(bmk_cond_t *c) {
 	}
 	bmk_atomics_unlock(&c->lock);
 
-	fprintf(stdout, "<-- bmk_cond_signal cond=%p\n", c);
-	fflush(stdout);
+	bmk_debug("<-- bmk_cond_signal cond=%p\n", c);
 }
 
 void bmk_cond_signal_all(bmk_cond_t *c) {

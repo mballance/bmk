@@ -77,7 +77,7 @@ primary_startup:
 
   TRACEPOINT(200)
   // Ensure the other cores stay blocked: bmk_sys_data.c0_ready_key = 0
-  la t1, bmk_sys_data
+  la t1, c0_ready_key
   li t2, 0
   sw t2, 0(t1)
 
@@ -97,6 +97,19 @@ zero_loop:
   ble t1, t2, zero_loop
 
 zero_loop_end:
+  TRACEPOINT(301)
+
+  // Target address range is __data_start to _edata
+  la t1, __data_start
+  la t2, _edata
+  la t3, __data_load
+reloc_loop:
+  lw t4, 0(t3)
+  sw t4, 0(t1)
+  addi t1, t1, 4
+  addi t3, t3, 4
+  ble t1, t2, reloc_loop
+reloc_loop_end:
 
   TRACEPOINT(400)
 
@@ -132,9 +145,28 @@ non_primary_startup:
   addi t1, t1, 1
   bne t1, t2, 1b
 
-// TODO: just spin for now
+  // Wait for c0_ready_key to be set to the KEY value
+  la t0, c0_ready_key
+  li t1, UNLOCK_KEY
 1:
-	j 1b
+  lw t2, 0(t0)
+  bne t1, t2, 1b
+
+  // Load the stack pointer
+  csrr t0, mhartid // HW Thread ID (core)
+  la t1, core_stack
+  li t2, 8
+  mul t0, t0, t2    // determine the offset
+  add t1, t1, t0
+  lw t1, 0(t1)     // Load the stack pointer
+
+  beq t1, zero, nonprimary_idle  // No stack configured
+
+  // Initialize the core's stack
+
+  // Spin, since we haven't been activated
+nonprimary_idle:
+	j nonprimary_idle
 
   // Select the appropriate stack
 //  la sp, _bmk_c0_stack

@@ -12,6 +12,7 @@
 #define UNLOCK_KEY 0x55EA1234
 #include "bmk_impl_sys.h"
 
+
 typedef struct bmk_core_data_s {
 	uint32_t					procid;
 	bmk_thread_t				*active_thread;
@@ -23,11 +24,16 @@ typedef struct bmk_core_data_s {
 } bmk_core_data_t;
 
 typedef struct bmk_sys_data_s {
-	uint32_t					c0_ready_key;
-	uint32_t					core_release_mask[((BMK_MAX_CORES-1)/32)+1];
 	bmk_core_data_t				core_data[BMK_MAX_CORES];
 } bmk_sys_data_t;
 
+// Keep individual fields for simplicity of access from ASM
+
+// Key to notify non-primary cores that C0 is alive and initialized
+extern uint32_t					c0_ready_key;
+// Stack pointers for each core
+extern void						*core_stack[BMK_MAX_CORES];
+extern uint32_t					core_stack_sz[BMK_MAX_CORES];
 extern bmk_sys_data_t			bmk_sys_data;
 
 /**
