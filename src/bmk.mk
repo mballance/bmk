@@ -1,5 +1,6 @@
 
 BMK_SRC_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+BMK_DIR := $(abspath $(BMK_SRC_DIR)/..)
 
 ifneq (1,$(RULES))
 
