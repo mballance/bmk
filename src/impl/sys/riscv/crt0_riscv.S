@@ -64,7 +64,7 @@ _start:
   mv x30, x1
   mv x31, x1
 
-  TRACEPOINT(100)
+//  TRACEPOINT(100)
 
 
   csrr t0, mhartid // HW Thread ID (core)
