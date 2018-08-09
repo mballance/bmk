@@ -58,6 +58,8 @@ void bmk_set_level1_main_func(bmk_level1_main_f f) {
 }
 
 void __attribute__((weak)) bmk_level1_main(uint32_t cid) {
+	// Call the user's level1 function if desired
+	// Otherwise, start up the scheduler
 	if (prv_level1_main_func) {
 		prv_level1_main_func(cid);
 	} else {
@@ -67,6 +69,10 @@ void __attribute__((weak)) bmk_level1_main(uint32_t cid) {
 			bmk_scheduler_nonprimary();
 		}
 	}
+}
+
+void bmk_set_bmk_main_func(bmk_main_f func) {
+	prv_main_func = func;
 }
 
 void __attribute__((weak)) bmk_main(void)  {
