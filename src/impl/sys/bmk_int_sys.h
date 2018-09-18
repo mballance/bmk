@@ -75,13 +75,22 @@ uint32_t bmk_get_procid(void);
  */
 bmk_core_data_t *bmk_sys_get_core_data(void);
 
-void bmk_sys_core_init(int cid);
+/**
+ * Initializes the specified core with a stack
+ */
+void bmk_sys_core_init(int cid, void *stk);
 
 uint32_t bmk_sys_main_core_active(void);
 
 void bmk_sys_wait_proc_event(void);
 
 void bmk_sys_send_proc_event(uint8_t *mask, uint32_t mask_sz);
+
+void bmk_sys_emit(const char *str);
+
+void bmk_sys_exit(int code);
+
+void bmk_sys_poweroff(void);
 
 #endif /* INCLUDED_BMK_INT_SYS_H */
 

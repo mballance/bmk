@@ -35,6 +35,13 @@ void bmk_set_level0_main_func(bmk_main_f func);
 //
 void bmk_level0_main(void);
 
+/**
+ * Called by level0 main to initialize the
+ * specified core. Only initialized cores
+ * will execute
+ */
+void bmk_init_core(uint32_t cid, void *stk, uint32_t stk_sz);
+
 void bmk_set_level1_main_func(bmk_level1_main_f func);
 
 void bmk_level1_main(uint32_t cid);

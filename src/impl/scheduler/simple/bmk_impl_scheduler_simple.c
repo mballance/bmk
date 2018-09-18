@@ -79,6 +79,8 @@ void bmk_scheduler_init(void) {
 
 void bmk_scheduler_thread_new(bmk_thread_t *t) {
 	bmk_debug("--> bmk_scheduler_thread_new(%p)\n", t);
+	bmk_debug("  sizeof(bmk_thread_t)=%d sizeof(context)=%d\n",
+			sizeof(bmk_thread_t), sizeof(bmk_context_t));
 	bmk_atomics_lock(&prv_data.lock);
 	t->next = prv_data.active_thread_l;
 	prv_data.active_thread_l = t;
@@ -89,7 +91,7 @@ void bmk_scheduler_thread_new(bmk_thread_t *t) {
 void bmk_scheduler_thread_exit(bmk_thread_t *t) {
 	bmk_core_data_t *core_data = bmk_sys_get_core_data();
 	bmk_thread_t *active_t=core_data->active_thread, *next_t;
-	bmk_debug("--> bmk_scheduler_thread_exit()\n");
+	bmk_debug("--> bmk_scheduler_thread_exit(%p)\n", active_t);
 	bmk_atomics_lock(&prv_data.lock);
 
 	next_t = bmk_simple_scheduler_get_next_thread(core_data);
@@ -142,7 +144,7 @@ void bmk_scheduler_reschedule(uint32_t wait) {
 	bmk_thread_t *active_t = core_data->active_thread;
 
 	if (!active_t) {
-		bmk_debug("Error: core %d doesn't have an active thread\n",
+		bmk_fatal("core %d doesn't have an active thread\n",
 				core_data->procid);
 		return;
 	}

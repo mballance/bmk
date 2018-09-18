@@ -18,6 +18,9 @@
  *
  */
 void bmk_startup(void) {
+	uint32_t i, nprocs;
+
+	bmk_sys_emit("Hello World!\n");
 	// Allow the user's code to initialize some core hardware
 	bmk_hardware_init();
 
@@ -28,6 +31,17 @@ void bmk_startup(void) {
 	// Perform single-core startup activities
 	// This function will initialize enabled cores with the application stack
 	bmk_level0_main();
+
+	// Now, wake up any active cores
+	nprocs = bmk_get_nprocs();
+
+	for (i=1; i<nprocs; i++) {
+		// TODO:
+
+	}
+
+	// Finally, call the primary-core main
+//	bmk_level1_main(0);
 
 	// TODO: Before exiting, notify nonprimary cores that we're ready for them
 

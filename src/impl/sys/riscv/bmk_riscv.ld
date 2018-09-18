@@ -62,13 +62,14 @@ SECTIONS
 
     .data ALIGN(0x10): {
         . = ALIGN(0x4);
-        __data_load = LOADADDR(.data);
-        __data_start = .;
+        _data_load = LOADADDR(.data);
+        _data_start = .;
         KEEP(*(.jcr))
         *(.got.plt) *(.got)
         *(.shdata)
         *(.data .data.* .gnu.linkonce.d.*)
         . = ALIGN(4);
+        _data_end = .;
         _edata = .;
     } >ram AT>rom
 

@@ -7,6 +7,8 @@
 
 #define UNLOCK_KEY 0x55EA1234
 
+#define TRACEPOINT(x)
+/*
 #define TRACEPOINT(x) \
   li t0, 0x60001000; \
   li t1, 0x02a5; \
@@ -15,11 +17,12 @@
   sll t1, t1, 8; \
   ori t1, t1, 0x05; \
   sw t1, 0(t0);
+ */
 
 // .section .data
 // c0_ready: .word 0
 
-.section .text.start, "ax", @progbits
+.section .text.init, "ax", @progbits
 .globl _start
 _start:
 
@@ -81,7 +84,7 @@ primary_startup:
   li t2, 0
   sw t2, 0(t1)
 
-  la sp, _stack_top
+  la sp, _memory_end
   add sp, sp, -8
 
   TRACEPOINT(300)
@@ -100,9 +103,11 @@ zero_loop_end:
   TRACEPOINT(301)
 
   // Target address range is __data_start to _edata
-  la t1, __data_start
-  la t2, _edata
-  la t3, __data_load
+  la t1, _data_start
+  la t2, _data_end
+  la t3, _data_load
+  // Don't relocate if we don't need to
+  beq t1, t3, reloc_loop_end
 reloc_loop:
   lw t4, 0(t3)
   sw t4, 0(t1)
@@ -121,11 +126,40 @@ reloc_loop_end:
 
   TRACEPOINT(500)
 
-  // On return, reconfigure the stack and
+
   // TODO: reconfigure stack
+  // On return, reconfigure the stack if one has been specified
+  csrr t0, mhartid // HW Thread ID (core)
+  li t1, 8
+  mul t1, t0, t1 // determine the offset to the core stack
+  la t2, core_stack
+  add t2, t2, t1 // t2 now holds the address of the stack pointer
+  ld t4, 0(t2)
+
+  beq t4, zero, no_stack // If the stack pointer is zero, keep going
+    // Otherwise, now determine the stack size
+    li t1, 4
+    mul t1, t0, t1
+    la t2, core_stack_sz
+    add t2, t2, t1
+    ld t2, 0(t2)
+
+    // Okay, now t2 has the stack size
+    // and t4 has the stack base
+    add t4, t2, t4
+    add sp, t4, -8
+
+no_stack:
+
+
+  // Now that we've setup the stack,
+  // call level1 main
   csrr t0, mhartid // HW Thread ID (core)
   addi a0, t0, 0 // pass the CID
-  jal ra, bmk_level1_main
+  jal ra, _bmk_level1_main
+
+  // On return,
+  jal ra, bmk_sys_poweroff
 
   // On return, spin
 1:
@@ -136,6 +170,10 @@ reloc_loop_end:
  * Startup for non-primary cores
  */
 non_primary_startup:
+	// Wait for an IPI
+	wfi
+	j	non_primary_startup
+
 //  TRACEPOINT(600)
 
   // Kill some time to ensure C0 can initialize things

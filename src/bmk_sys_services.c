@@ -8,6 +8,7 @@
 #include "bmk_sys_services.h"
 #include "bmk_int_scheduler.h"
 #include "bmk_int_sys.h"
+#include "bmk_msg_services.h"
 
 static bmk_main_f			prv_level0_main_func = 0;
 static bmk_level1_main_f	prv_level1_main_func = 0;
@@ -29,6 +30,8 @@ void bmk_sys_init(void) {
 //	bmk_sys_data.core_release_mask[i] = 1;
 
 	for (i=0; i<BMK_MAX_CORES; i++) {
+		core_stack[i] = 0;
+		core_stack_sz[i] = 0;
 		bmk_sys_data.core_data[i].procid = i;
 		bmk_sys_data.core_data[i].active_thread = 0;
 	}
@@ -53,6 +56,11 @@ void __attribute__((weak)) bmk_level0_main(void) {
 	}
 }
 
+void bmk_init_core(uint32_t cid, void *stk, uint32_t stk_sz) {
+	core_stack[cid] = stk;
+	core_stack_sz[cid] = stk_sz;
+}
+
 void bmk_set_level1_main_func(bmk_level1_main_f f) {
 	prv_level1_main_func = f;
 }
@@ -63,12 +71,27 @@ void __attribute__((weak)) bmk_level1_main(uint32_t cid) {
 	if (prv_level1_main_func) {
 		prv_level1_main_func(cid);
 	} else {
+
 		if (cid == 0) {
 			bmk_main();
 		} else {
 			bmk_scheduler_nonprimary();
 		}
 	}
+}
+
+void _bmk_level1_main(uint32_t cid) {
+	bmk_core_data_t *core = bmk_sys_get_core_data();
+	bmk_context_getcontext(&core->main_thread.ctxt);
+
+	// Initially pin this thread to the relevant processor
+	core->main_thread.procmask = (1 << bmk_get_procid());
+	core->active_thread = &core->main_thread;
+
+	bmk_info_low("Setting active_thread for %0d to %p",
+			bmk_get_procid(), core->active_thread);
+
+	bmk_level1_main(cid);
 }
 
 void bmk_set_bmk_main_func(bmk_main_f func) {

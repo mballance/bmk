@@ -9,6 +9,8 @@ BMK_SYS_SRC = $(notdir $(wildcard $(BMK_SYS_DIR)/*.c))
 
 BMK_DEPS += libbmk_sys.o
 
+LIBBMK_OBJS += $(BMK_SYS_SRC:.c=.o)
+
 else # Rules
 
 libbmk_sys.o : $(BMK_SYS_SRC:.c=.o)

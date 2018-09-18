@@ -51,11 +51,12 @@ uint32_t bmk_get_nprocs(void) {
  * Returns the core data for the active processor
  */
 bmk_core_data_t *bmk_sys_get_core_data(void) {
-	// TODO:
+	return &bmk_sys_data.core_data[bmk_get_procid()];
 }
 
 uint32_t bmk_sys_main_core_active(void) {
 	// TODO:
+	return 0;
 }
 
 void bmk_sys_wait_proc_event(void) {
