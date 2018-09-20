@@ -2,7 +2,7 @@
 MEMORY
 {
 	rom(rx)	 : ORIGIN = 0x10000, LENGTH = 0x00010000
-	ram(rwx) : ORIGIN = 0x40000000, LENGTH = 0x00001000
+	ram(rwx) : ORIGIN = 0x40000000, LENGTH = 0x00002000
 }
 
 SECTIONS
@@ -11,7 +11,7 @@ SECTIONS
 	.text : {
 		CREATE_OBJECT_SYMBOLS
 		. += 0x40;
-        *(.text.start)
+        *(.text.init)
 /*        *(.text .text.* .gnu.linkonce.t.*) */
         *(.text .gnu.linkonce.t.*)
         *(.plt)
@@ -58,10 +58,10 @@ SECTIONS
         . = ALIGN(0x4);
     } >ram
 
-    . = ALIGN(16);
+    . = ALIGN(16); 
 
-    .data ALIGN(0x10): {
-        . = ALIGN(0x4);
+    .data ALIGN(0x10) : {
+        . = ALIGN(0x4); 
         _data_load = LOADADDR(.data);
         _data_start = .;
         KEEP(*(.jcr))
@@ -87,8 +87,9 @@ SECTIONS
 		_boot_heap_base = .; PROVIDE(boot_heap_base = .);
 	} > ram
 	
-	. = 0x52001000;
-	PROVIDE(_stack_top = .);
+/*	. = 0x52001000; */
+/*	PROVIDE(_stack_top = .); */
+    PROVIDE(_memory_end = ORIGIN(ram) + LENGTH(ram));
 
 /*
     . = ROM_BASE;

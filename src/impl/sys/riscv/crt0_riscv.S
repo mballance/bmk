@@ -126,8 +126,6 @@ reloc_loop_end:
 
   TRACEPOINT(500)
 
-
-  // TODO: reconfigure stack
   // On return, reconfigure the stack if one has been specified
   csrr t0, mhartid // HW Thread ID (core)
   li t1, 8
@@ -150,7 +148,6 @@ reloc_loop_end:
     add sp, t4, -8
 
 no_stack:
-
 
   // Now that we've setup the stack,
   // call level1 main

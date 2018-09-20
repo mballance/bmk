@@ -20,9 +20,10 @@
 void bmk_startup(void) {
 	uint32_t i, nprocs;
 
-	bmk_sys_emit("Hello World!\n");
 	// Allow the user's code to initialize some core hardware
 	bmk_hardware_init();
+
+//	bmk_sys_emit("Hello World!\n");
 
 	// Perform basic initialization running on core0
 	// This might be as involved as waiting for a program to be loaded
