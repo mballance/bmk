@@ -13,13 +13,19 @@ static int vsnprintf(char * out, size_t n, const char* s, va_list vl);
 
 
 void bmk_info_low(const char *fmt, ...) {
-	int res;
 	va_list ap;
+	va_start(ap, fmt);
+
+	bmk_info_low_v(fmt, ap);
+
+	va_end(ap);
+}
+
+void bmk_info_low_v(const char *fmt, va_list ap) {
+	int res;
 	char buf[256];
 	char *ptr = buf;
 	const char *pref = "[INFO] ";
-
-	va_start(ap, fmt);
 
 	while (*pref) {
 		*ptr = *pref;
@@ -34,12 +40,18 @@ void bmk_info_low(const char *fmt, ...) {
 
 	// TODO: provide a BMK call for this
 	bmk_sys_emit(buf);
-
-	va_end(ap);
 }
 
 void bmk_info_mid(const char *fmt, ...) {
 	va_list ap;
+	va_start(ap, fmt);
+
+	bmk_info_mid_v(fmt, ap);
+
+	va_end(ap);
+}
+
+void bmk_info_mid_v(const char *fmt, va_list ap) {
 	char buf[256];
 	int res;
 	char *ptr = buf;
@@ -51,20 +63,24 @@ void bmk_info_mid(const char *fmt, ...) {
 		pref++;
 	}
 
-	va_start(ap, fmt);
-
 	res = vsnprintf(ptr, sizeof(buf)-8-2, fmt, ap);
 	ptr[res] = '\n';
 	buf[sizeof(buf)-1] = 0;
 
 	// TODO: provide a BMK call for this
 	bmk_sys_emit(buf);
-
-	va_end(ap);
 }
 
 void bmk_info_high(const char *fmt, ...) {
 	va_list ap;
+	va_start(ap, fmt);
+
+	bmk_info_high_v(fmt, ap);
+
+	va_end(ap);
+}
+
+void bmk_info_high_v(const char *fmt, va_list ap) {
 	char buf[256];
 	int res;
 	char *ptr = buf;
@@ -76,20 +92,24 @@ void bmk_info_high(const char *fmt, ...) {
 		pref++;
 	}
 
-	va_start(ap, fmt);
-
 	res = vsnprintf(ptr, sizeof(buf)-8-2, fmt, ap);
 	ptr[res] = '\n';
 	buf[sizeof(buf)-1] = 0;
 
 	// TODO: provide a BMK call for this
 	bmk_sys_emit(buf);
-
-	va_end(ap);
 }
 
 void bmk_error(const char *fmt, ...) {
 	va_list ap;
+	va_start(ap, fmt);
+
+	bmk_error_v(fmt, ap);
+
+	va_end(ap);
+}
+
+void bmk_error_v(const char *fmt, va_list ap) {
 	char buf[256];
 	int res;
 	char *ptr = buf;
@@ -101,19 +121,23 @@ void bmk_error(const char *fmt, ...) {
 		pref++;
 	}
 
-	va_start(ap, fmt);
-
 	res = vsnprintf(ptr, sizeof(buf)-9-1, fmt, ap);
 	buf[sizeof(buf)-1] = 0;
 
 	// TODO: provide a BMK call for this
 	bmk_sys_emit(buf);
-
-	va_end(ap);
 }
 
 void bmk_fatal(const char *fmt, ...) {
 	va_list ap;
+	va_start(ap, fmt);
+
+	bmk_fatal_v(fmt, ap);
+
+	va_end(ap);
+}
+
+void bmk_fatal_v(const char *fmt, va_list ap) {
 	char buf[256];
 	int res;
 	char *ptr = buf;
@@ -125,8 +149,6 @@ void bmk_fatal(const char *fmt, ...) {
 		pref++;
 	}
 
-	va_start(ap, fmt);
-
 	res = vsnprintf(ptr, sizeof(buf)-9-1, fmt, ap);
 	buf[sizeof(buf)-1] = 0;
 
@@ -136,8 +158,6 @@ void bmk_fatal(const char *fmt, ...) {
 	// bail out
 	// TODO: provide a dedicated BMK panic-exit call
 	bmk_sys_exit(1);
-
-	va_end(ap);
 }
 
 /**

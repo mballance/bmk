@@ -1,0 +1,1875 @@
+Hello World!
+[INFO] bmk_level0_main
+[INFO] Setting active_thread for 0 to 0x00000000800037d0
+[INFO] Hello from bmk_main
+[INFO] --> bmk_scheduler_thread_new(0x0000000080006b40)
+
+[INFO]   sizeof(bmk_thread_t)=552 sizeof(context)=512
+
+[INFO] <-- bmk_scheduler_thread_new()
+
+[INFO] --> bmk_scheduler_thread_new(0x0000000080006918)
+
+[INFO]   sizeof(bmk_thread_t)=552 sizeof(context)=512
+
+[INFO] <-- bmk_scheduler_thread_new()
+
+[INFO] --> bmk_thread_join: 0x0000000080006b40 1
+
+[INFO] --> bmk_scheduler_reschedule active=0x00000000800037d0
+
+[INFO] t=0x0000000080006918 next=0x0000000080006b40
+
+[INFO] head t=0x0000000080006b40
+
+[INFO]   t=0x0000000080006918 mask=0x00000001
+
+[INFO]   t=0x0000000080006b40 mask=0x00000001
+
+[INFO]   t=0x00000000800037d0 mask=0x00000001
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO]   next_thread=0x0000000080006918 (active_t=0x00000000800037d0)
+
+[INFO] SWAP: 0x00000000800037d0 => 0x0000000080006918
+
+[INFO] Hello from t2_f
+
+[INFO] --> t2: recv 0
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] Hello from t1_f
+
+[INFO] --> t1: send 0
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t1: send 0
+[INFO] --> t1: recv 0
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x0000000080006918
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t2: recv 0
+[INFO] --> t2: send 0
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t2: send 0
+[INFO] --> t2: recv 1
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t1: recv 0
+[INFO] --> t1: send 1
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t1: send 1
+[INFO] --> t1: recv 1
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x0000000080006918
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t2: recv 1
+[INFO] --> t2: send 1
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t2: send 1
+[INFO] --> t2: recv 2
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t1: recv 1
+[INFO] --> t1: send 2
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t1: send 2
+[INFO] --> t1: recv 2
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x0000000080006918
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t2: recv 2
+[INFO] --> t2: send 2
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t2: send 2
+[INFO] --> t2: recv 3
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t1: recv 2
+[INFO] --> t1: send 3
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t1: send 3
+[INFO] --> t1: recv 3
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x0000000080006918
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t2: recv 3
+[INFO] --> t2: send 3
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t2: send 3
+[INFO] --> t2: recv 4
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t1: recv 3
+[INFO] --> t1: send 4
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t1: send 4
+[INFO] --> t1: recv 4
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x0000000080006918
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t2: recv 4
+[INFO] --> t2: send 4
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t2: send 4
+[INFO] --> t2: recv 5
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t1: recv 4
+[INFO] --> t1: send 5
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t1: send 5
+[INFO] --> t1: recv 5
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x0000000080006918
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t2: recv 5
+[INFO] --> t2: send 5
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t2: send 5
+[INFO] --> t2: recv 6
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t1: recv 5
+[INFO] --> t1: send 6
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t1: send 6
+[INFO] --> t1: recv 6
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x0000000080006918
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t2: recv 6
+[INFO] --> t2: send 6
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t2: send 6
+[INFO] --> t2: recv 7
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t1: recv 6
+[INFO] --> t1: send 7
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t1: send 7
+[INFO] --> t1: recv 7
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x0000000080006918
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t2: recv 7
+[INFO] --> t2: send 7
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t2: send 7
+[INFO] --> t2: recv 8
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t1: recv 7
+[INFO] --> t1: send 8
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t1: send 8
+[INFO] --> t1: recv 8
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x0000000080006918
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t2: recv 8
+[INFO] --> t2: send 8
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t2: send 8
+[INFO] --> t2: recv 9
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t1: recv 8
+[INFO] --> t1: send 9
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t1: send 9
+[INFO] --> t1: recv 9
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x0000000080006918
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t2: recv 9
+[INFO] --> t2: send 9
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t2: send 9
+[INFO] --> t2: recv 10
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t1: recv 9
+[INFO] --> t1: send 10
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t1: send 10
+[INFO] --> t1: recv 10
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x0000000080006918
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t2: recv 10
+[INFO] --> t2: send 10
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t2: send 10
+[INFO] --> t2: recv 11
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t1: recv 10
+[INFO] --> t1: send 11
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t1: send 11
+[INFO] --> t1: recv 11
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x0000000080006918
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t2: recv 11
+[INFO] --> t2: send 11
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t2: send 11
+[INFO] --> t2: recv 12
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t1: recv 11
+[INFO] --> t1: send 12
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t1: send 12
+[INFO] --> t1: recv 12
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x0000000080006918
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t2: recv 12
+[INFO] --> t2: send 12
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t2: send 12
+[INFO] --> t2: recv 13
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t1: recv 12
+[INFO] --> t1: send 13
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t1: send 13
+[INFO] --> t1: recv 13
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x0000000080006918
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t2: recv 13
+[INFO] --> t2: send 13
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t2: send 13
+[INFO] --> t2: recv 14
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t1: recv 13
+[INFO] --> t1: send 14
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t1: send 14
+[INFO] --> t1: recv 14
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x0000000080006918
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t2: recv 14
+[INFO] --> t2: send 14
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t2: send 14
+[INFO] --> t2: recv 15
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t1: recv 14
+[INFO] --> t1: send 15
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t1: send 15
+[INFO] --> t1: recv 15
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] --> bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006918 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006918
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006918
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x0000000080006918
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006918
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d68
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006d80
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006d80
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d68
+
+[INFO] <-- t2: recv 15
+[INFO] --> t2: send 15
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] --> bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_scheduler_thread_unblock
+
+[INFO] <-- bmk_cond_signal cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t2: send 15
+[INFO] Goodbye from t2_f
+
+[INFO] --> bmk_scheduler_thread_exit(0x0000000080006918)
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x0000000080006b40 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x0000000080006b40
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x0000000080006b40
+
+[INFO] EXIT SWAP: 0x0000000080006918 => 0x0000000080006b40
+
+[INFO] <-- bmk_scheduler_thread_block proc=0 thread=0x0000000080006b40
+
+[INFO] --> bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_lock 0x0000000080006d98
+
+[INFO] <-- bmk_cond_wait cond=0x0000000080006db0
+
+[INFO] --> bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- bmk_mutex_unlock 0x0000000080006d98
+
+[INFO] <-- t1: recv 15
+[INFO] Goodbye from t1_f
+
+[INFO] --> bmk_scheduler_thread_exit(0x0000000080006b40)
+
+[INFO] --> bmk_simple_scheduler_get_next_thread
+
+[INFO]   t=0x00000000800037d0 procmask=0x00000001 procid=0
+
+[INFO] next_t = 0x00000000800037d0
+
+[INFO] <-- bmk_simple_scheduler_get_next_thread 0x00000000800037d0
+
+[INFO] EXIT SWAP: 0x0000000080006b40 => 0x00000000800037d0
+
+[INFO] <-- bmk_scheduler_reschedule
+
+[INFO] <-- bmk_thread_join: 0x0000000080006b40 0
+
+[INFO] --> bmk_thread_join: 0x0000000080006918 0
+
+[INFO] <-- bmk_thread_join: 0x0000000080006918 0
+
+[POWEROFF]

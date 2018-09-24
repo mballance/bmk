@@ -25,16 +25,16 @@
 .section .text.init, "ax", @progbits
 .globl _start
 _start:
+	j	reset
 
-/* Copied from libgloss */
-.option push
-.option norelax
-/*
-1:auipc gp, %pcrel_hi(__global_pointer$)
-  addi  gp, gp, %pcrel_lo(1b)
- */
-.option pop
+nmi_vector:
+	j	nmi_vector
 
+trap_vector:
+	j	trap_handler
+
+
+reset:
   mv  x1, x0 // Zero out x1
   mv  x2, x1
   mv  x3, x1
@@ -68,6 +68,16 @@ _start:
   mv x31, x1
 
 //  TRACEPOINT(100)
+
+  // Initialize exception handling
+  la t0, trap_handler
+  csrw mtvec, t0
+  csrwi mstatus, 0
+  csrwi mideleg, 0 // disable delegation
+  csrwi medeleg, 0
+
+  // Disable all interrupts
+  csrwi mie, 0
 
 
   csrr t0, mhartid // HW Thread ID (core)
@@ -202,6 +212,100 @@ non_primary_startup:
   // Spin, since we haven't been activated
 nonprimary_idle:
 	j nonprimary_idle
+
+/********************************************************************
+ * trap_handler
+ *
+ * Wrapper code prior to calling
+ ********************************************************************/
+trap_handler:
+	addi	sp, sp, -(32*8)
+	sd		x1, 1*8(sp)
+	sd		x2, 2*8(sp)
+	sd		x3, 3*8(sp)
+	sd		x4, 4*8(sp)
+	sd		x5, 5*8(sp)
+	sd		x6, 6*8(sp)
+	sd		x7, 7*8(sp)
+	sd		x8, 8*8(sp)
+	sd		x9, 9*8(sp)
+	sd		x10, 10*8(sp)
+	sd		x11, 11*8(sp)
+	sd		x12, 12*8(sp)
+	sd		x13, 13*8(sp)
+	sd		x14, 14*8(sp)
+	sd		x15, 15*8(sp)
+	sd		x16, 16*8(sp)
+	sd		x17, 17*8(sp)
+	sd		x18, 18*8(sp)
+	sd		x19, 19*8(sp)
+	sd		x20, 20*8(sp)
+	sd		x21, 21*8(sp)
+	sd		x22, 22*8(sp)
+	sd		x23, 23*8(sp)
+	sd		x24, 24*8(sp)
+	sd		x25, 25*8(sp)
+	sd		x26, 26*8(sp)
+	sd		x27, 27*8(sp)
+	sd		x28, 28*8(sp)
+	sd		x29, 29*8(sp)
+	sd		x30, 30*8(sp)
+	sd		x31, 31*8(sp)
+
+	csrr a0, mcause
+	csrr a1, mepc
+	sd		a1, 0*8(sp)
+	mv a2, sp
+	jal bmk_sys_riscv_trap
+	ld		a1, 0*8(sp)
+	csrw mepc, a1
+
+	// Stay in M-mode after return
+//	li		t0, 0x1800
+//	csrw	mstatus, t0
+
+	ld		x1, 1*8(sp)
+	ld		x2, 2*8(sp)
+	ld		x3, 3*8(sp)
+	ld		x4, 4*8(sp)
+	ld		x5, 5*8(sp)
+	ld		x6, 6*8(sp)
+	ld		x7, 7*8(sp)
+	ld		x8, 8*8(sp)
+	ld		x9, 9*8(sp)
+	ld		x10, 10*8(sp)
+	ld		x11, 11*8(sp)
+	ld		x12, 12*8(sp)
+	ld		x13, 13*8(sp)
+	ld		x14, 14*8(sp)
+	ld		x15, 15*8(sp)
+	ld		x16, 16*8(sp)
+	ld		x17, 17*8(sp)
+	ld		x18, 18*8(sp)
+	ld		x19, 19*8(sp)
+	ld		x20, 20*8(sp)
+	ld		x21, 21*8(sp)
+	ld		x22, 22*8(sp)
+	ld		x23, 23*8(sp)
+	ld		x24, 24*8(sp)
+	ld		x25, 25*8(sp)
+	ld		x26, 26*8(sp)
+	ld		x27, 27*8(sp)
+	ld		x28, 28*8(sp)
+	ld		x29, 29*8(sp)
+	ld		x30, 30*8(sp)
+	ld		x31, 31*8(sp)
+
+	addi	sp, sp, 32*8
+	mret
+
+
+.globl bmk_sys_enable_interrupts
+bmk_sys_enable_interrupts:
+	li		t0, 0x800
+	csrw	mie, t0
+	csrwi	mstatus, 0x8
+	ret
 
   // Select the appropriate stack
 //  la sp, _bmk_c0_stack

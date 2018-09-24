@@ -8,6 +8,7 @@
 #ifndef INCLUDED_BMK_INT_SYS_H
 #define INCLUDED_BMK_INT_SYS_H
 #include "bmk_thread_services.h"
+#include "bmk_sys_services.h"
 #include "bmk_config.h"
 #define UNLOCK_KEY 0x55EA1234
 #include "bmk_impl_sys.h"
@@ -17,6 +18,8 @@ typedef struct bmk_core_data_s {
 	uint32_t					procid;
 	bmk_thread_t				*active_thread;
 	bmk_thread_t				main_thread;
+
+	bmk_irq_f					irq_handler;
 
 	bmk_core_impl_data_t		impl_data;
 

@@ -15,23 +15,6 @@
 extern "C" {
 #endif
 
-/**
- * bmk_get_clusterid()
- *
- *
- */
-
-typedef void (*bmk_irq_handler_f)(void *ud, uint32_t id);
-
-/**
- * bmk_set_irq_handler()
- *
- * Sets the user-interrupt handler for the specified core
- */
-void bmk_set_irq_handler(
-		uint32_t			procid,
-		bmk_irq_handler_f	handler,
-		void				*ud);
 
 /**
  * bmk_main must be supplied by the user

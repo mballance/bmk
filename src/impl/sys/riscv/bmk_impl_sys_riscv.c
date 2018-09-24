@@ -17,6 +17,21 @@ uint32_t bmk_get_procid(void) {
 	return ret;
 }
 
+void bmk_sys_riscv_trap(uint64_t mcause, uint64_t mepc) {
+	bmk_core_data_t *cd = bmk_sys_get_core_data();
+
+	if (cd->irq_handler) {
+		cd->irq_handler(mcause);
+	}
+}
+
+//void bmk_sys_enable_interrupts(void) {
+///* TODO:
+//	asm("csrwi mie, 0x800"); // MEIE
+//	asm("csrwi mstatus, 0x8"); // MIE
+// */
+//}
+
 /**
  * Internal function called by the BMK core to release all non-primary cores
  */

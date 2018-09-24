@@ -34,8 +34,8 @@ void bmk_sys_init(void) {
 		core_stack_sz[i] = 0;
 		bmk_sys_data.core_data[i].procid = i;
 		bmk_sys_data.core_data[i].active_thread = 0;
+		bmk_sys_data.core_data[i].irq_handler = 0;
 	}
-
 }
 
 void __attribute__((weak)) bmk_hardware_init(void) {
@@ -102,5 +102,9 @@ void __attribute__((weak)) bmk_main(void)  {
 	if (prv_main_func) {
 		prv_main_func();
 	}
+}
+
+void bmk_sys_set_irq_handler(bmk_irq_f handler) {
+	bmk_sys_get_core_data()->irq_handler = handler;
 }
 

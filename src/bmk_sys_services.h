@@ -11,6 +11,12 @@
 #include "bmk_int_atomics.h"
 
 /**
+ * This function is used to register a core-specific
+ * interrupt handler.
+ */
+typedef void (*bmk_irq_f)(uint64_t cause);
+
+/**
  * bmk_get_nprocs()
  */
 uint32_t bmk_get_nprocs(void);
@@ -34,6 +40,11 @@ void bmk_set_level0_main_func(bmk_main_f func);
 
 //
 void bmk_level0_main(void);
+
+void bmk_sys_set_irq_handler(bmk_irq_f handler);
+
+void bmk_sys_enable_interrupts(uint32_t en);
+
 
 /**
  * Called by level0 main to initialize the
