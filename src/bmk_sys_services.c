@@ -73,6 +73,7 @@ void __attribute__((weak)) bmk_level1_main(uint32_t cid) {
 	} else {
 
 		if (cid == 0) {
+			bmk_scheduler_init();
 			bmk_main();
 		} else {
 			bmk_scheduler_nonprimary();
@@ -80,19 +81,21 @@ void __attribute__((weak)) bmk_level1_main(uint32_t cid) {
 	}
 }
 
+// Assembly-call doesn't seem to teal with weak symbols
 void _bmk_level1_main(uint32_t cid) {
-	bmk_core_data_t *core = bmk_sys_get_core_data();
-	bmk_context_getcontext(&core->main_thread.ctxt);
-
-	// Initially pin this thread to the relevant processor
-	core->main_thread.procmask = (1 << bmk_get_procid());
-	core->active_thread = &core->main_thread;
-
-	bmk_info_low("Setting active_thread for %0d to %p",
-			bmk_get_procid(), core->active_thread);
-
 	bmk_level1_main(cid);
 }
+//	bmk_core_data_t *core = bmk_sys_get_core_data();
+//	bmk_context_getcontext(&core->main_thread.ctxt);
+//
+//	// Initially pin this thread to the relevant processor
+//	core->main_thread.procmask = (1 << bmk_get_procid());
+//	// Register this thread with the schedule as a running thread
+//	bmk_scheduler_thread_new(&core->main_thread, 1);
+////	core->active_thread = &core->main_thread;
+//
+//	bmk_level1_main(cid);
+//}
 
 void bmk_set_bmk_main_func(bmk_main_f func) {
 	prv_main_func = func;
@@ -108,3 +111,7 @@ void bmk_sys_set_irq_handler(bmk_irq_f handler) {
 	bmk_sys_get_core_data()->irq_handler = handler;
 }
 
+// Called by the scheduler when a thread is no longer in use
+void __attribute__((weak)) bmk_thread_free(bmk_thread_t *t) {
+	// By default, do nothing
+}

@@ -93,7 +93,18 @@ void bmk_cond_wait(bmk_cond_t *c, bmk_mutex_t *m);
 
 void bmk_cond_signal(bmk_cond_t *c);
 
+void bmk_cond_signal_async(bmk_cond_t *c);
+
 void bmk_cond_signal_all(bmk_cond_t *c);
+
+void bmk_event_init(bmk_event_t *e);
+
+void bmk_event_wait(bmk_event_t *e);
+
+void bmk_event_signal(bmk_event_t *e);
+
+// Called by the scheduler when a thread is no longer in use
+void bmk_thread_free(bmk_thread_t *t);
 
 
 #ifdef __cplusplus

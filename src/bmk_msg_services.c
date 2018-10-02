@@ -21,6 +21,18 @@ void bmk_info_low(const char *fmt, ...) {
 	va_end(ap);
 }
 
+void int_debug(const char *fmt, ...) {
+	char tmp[64];
+	va_list ap;
+	va_start(ap, fmt);
+
+	vsnprintf(tmp, sizeof(tmp), fmt, ap);
+
+	bmk_sys_emit(tmp);
+
+	va_end(ap);
+}
+
 void bmk_info_low_v(const char *fmt, va_list ap) {
 	int res;
 	char buf[256];
@@ -32,6 +44,8 @@ void bmk_info_low_v(const char *fmt, va_list ap) {
 		ptr++;
 		pref++;
 	}
+
+//	int_debug("fmt=%p, fmt[0]=%d", fmt, fmt[0]);
 
 	res = vsnprintf(ptr, sizeof(buf)-8-2, fmt, ap);
 	ptr[res] = '\n';

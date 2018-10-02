@@ -29,6 +29,9 @@ void bmk_atomics_lock(bmk_atomic_t *ptr);
  */
 void bmk_atomics_unlock(bmk_atomic_t *ptr);
 
+// Performs an atomic swap if [ptr] == oldval
+uint32_t bmk_atomics_compare_and_swap(bmk_atomic_t *ptr, uint32_t oldval, uint32_t newval);
+
 #ifdef __cplusplus
 }
 #endif

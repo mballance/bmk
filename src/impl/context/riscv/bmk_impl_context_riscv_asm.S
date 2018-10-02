@@ -2,7 +2,7 @@
 #include "bmk_impl_context_riscv_regs.h"
 
 .section .text
-.globl _bmk_context_init
+// .globl _bmk_context_init
 .globl bmk_context_swapcontext
 
 /**
@@ -13,6 +13,25 @@ _bmk_context_init:
   mv		a0, s2 // user-data value
   jr		s1
 
+// a0 - ctxt
+// a1 - stk
+// a2 - stk_sz
+// a3 - main_f
+// a4 - ud
+.globl bmk_context_makecontext
+bmk_context_makecontext:
+  sd		gp, OFF(GP)(a0)
+  sd		zero, OFF(S0)(a0)
+  sd		a3, OFF(S1)(a0) // S1 <= main_f
+  sd		a4, OFF(S2)(a0) // S2 <= ud
+  add		a1, a1, a2 // Compute stack top
+  addi		a1, a1, -8
+  sd		a1, OFF(SP)(a0)
+  la		t0, _bmk_context_init
+  sd		t0, OFF(RA)(a0)
+
+  // Return
+  ret
 
 /**
  * a0 - src context

@@ -43,7 +43,9 @@ void bmk_level0_main(void);
 
 void bmk_sys_set_irq_handler(bmk_irq_f handler);
 
-void bmk_sys_enable_interrupts(uint32_t en);
+void bmk_sys_enable_interrupts(void);
+
+void bmk_sys_disable_interrupts(void);
 
 
 /**

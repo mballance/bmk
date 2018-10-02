@@ -307,6 +307,15 @@ bmk_sys_enable_interrupts:
 	csrwi	mstatus, 0x8
 	ret
 
+.globl bmk_sys_disable_interrupts
+bmk_sys_disable_interrupts:
+	li		t0, ~0x8
+	csrr	t1, mstatus
+	and		t1, t1, t0
+	csrw	mstatus, t1
+	ret
+
+
   // Select the appropriate stack
 //  la sp, _bmk_c0_stack
 //  add t1, x0, t0 //

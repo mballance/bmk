@@ -32,4 +32,11 @@ bmk_atomics_unlock:
 	bne		t1, zero, 1b
 	jr		ra
 
+// a0 - pointer
+// a1 - new value
+.globl bmk_atomics_swap
+bmk_atomics_swap:
 
+	amoswap.w.aq a1, a1, (a0)
+	add			a0, a1, zero
+	ret

@@ -8,7 +8,6 @@
 #ifndef INCLUDED_BMK_IMPL_ATOMICS_GCC_H
 #define INCLUDED_BMK_IMPL_ATOMICS_GCC_H
 #include <stdint.h>
-#include <stdio.h>
 typedef uint32_t bmk_atomic_t;
 #include "bmk_int_atomics.h"
 
@@ -41,5 +40,8 @@ static inline void bmk_atomics_unlock(bmk_atomic_t *ptr) {
 //	fflush(stdout);
 }
 
+static inline uint32_t bmk_atomics_compare_and_swap(bmk_atomic_t *ptr, uint32_t oldval, uint32_t newval) {
+	return __sync_bool_compare_and_swap(ptr, oldval, newval);
+}
 
 #endif /* INCLUDED_BMK_IMPL_ATOMICS_GCC_H */
