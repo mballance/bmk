@@ -48,8 +48,6 @@ void bmk_info_low_v(const char *fmt, va_list ap) {
 //	int_debug("fmt=%p, fmt[0]=%d", fmt, fmt[0]);
 
 	res = vsnprintf(ptr, sizeof(buf)-8-2, fmt, ap);
-	ptr[res] = '\n';
-	ptr[res+1] = 0;
 	buf[sizeof(buf)-1] = 0;
 
 	// TODO: provide a BMK call for this
@@ -78,8 +76,6 @@ void bmk_info_mid_v(const char *fmt, va_list ap) {
 	}
 
 	res = vsnprintf(ptr, sizeof(buf)-8-2, fmt, ap);
-	ptr[res] = '\n';
-	buf[sizeof(buf)-1] = 0;
 
 	// TODO: provide a BMK call for this
 	bmk_sys_emit(buf);
@@ -107,8 +103,6 @@ void bmk_info_high_v(const char *fmt, va_list ap) {
 	}
 
 	res = vsnprintf(ptr, sizeof(buf)-8-2, fmt, ap);
-	ptr[res] = '\n';
-	buf[sizeof(buf)-1] = 0;
 
 	// TODO: provide a BMK call for this
 	bmk_sys_emit(buf);
