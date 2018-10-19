@@ -34,6 +34,7 @@ typedef struct bmk_sys_data_s {
 
 // Key to notify non-primary cores that C0 is alive and initialized
 extern uint32_t					c0_ready_key;
+
 // Stack pointers for each core
 extern void						*core_stack[BMK_MAX_CORES];
 extern uint32_t					core_stack_sz[BMK_MAX_CORES];
@@ -51,17 +52,6 @@ void bmk_sys_init(void);
  * Internal function called by the BMK core to release all non-primary cores
  */
 void bmk_sys_release_nonprimary_cores(void);
-
-/**
- * Internal function called by the scheduler to notify cores that there
- * may be a change for them to react to
- */
-void bmk_sys_core_notify_event(uint64_t mask);
-
-/**
- * Internal function called by the scheduler to wait for an event
- */
-void bmk_sys_core_wait_event(void);
 
 /**
  * Public function to return the number of processors
@@ -87,7 +77,7 @@ uint32_t bmk_sys_main_core_active(void);
 
 void bmk_sys_wait_proc_event(void);
 
-void bmk_sys_send_proc_event(uint8_t *mask, uint32_t mask_sz);
+void bmk_sys_send_proc_event(bmk_cpuset_t *mask);
 
 void bmk_sys_emit(const char *str);
 

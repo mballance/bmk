@@ -17,21 +17,34 @@ extern "C" {
 
 
 static inline void bmk_cpuset_set(uint32_t cpu, bmk_cpuset_t *cpuset) {
-	*cpuset |= (1 << cpu);
+	cpuset->mask[cpu/32] |= (1 << (cpu%32));
 }
 
 static inline uint32_t bmk_cpuset_isset(uint32_t cpu, bmk_cpuset_t *cpuset) {
-	return (*cpuset & (1 << cpu));
+	return (cpuset->mask[cpu/32] & (1 << (cpu%32)));
 }
 
 static inline void bmk_cpuset_clr(uint32_t cpu, bmk_cpuset_t *cpuset) {
-	*cpuset &= ~(1 << cpu);
+	cpuset->mask[cpu/32] &= ~(1 << (cpu%32));
 }
 
+#if BMK_MAX_CORES <= 32
 static inline void bmk_cpuset_zero(bmk_cpuset_t *cpuset) {
-	*cpuset = 0;
+	cpuset->mask[0] = 0;
 }
-
+#elif BMK_MAX_CORES <= 64
+static inline void bmk_cpuset_zero(bmk_cpuset_t *cpuset) {
+	cpuset->mask[0] = 0;
+	cpuset->mask[1] = 0;
+}
+#else
+static inline void bmk_cpuset_zero(bmk_cpuset_t *cpuset) {
+	uint32_t i;
+	for (i=0; i<sizeof(bmk_cpuset_t)/sizeof(uint32_t); i++) {
+		cpuset->mask[i] = 0;
+	}
+}
+#endif
 
 /**
  * bmk_thread_init()
@@ -56,7 +69,7 @@ void bmk_thread_init_cpuset(
 		uint32_t			stk_sz,
 		bmk_thread_main_f	main_f,
 		void				*ud,
-		bmk_cpuset_t		cpuset);
+		bmk_cpuset_t		*cpuset);
 
 /**
  * Causes the current core to select and run another
