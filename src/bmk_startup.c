@@ -20,6 +20,13 @@
 void bmk_startup(void) {
 	uint32_t i, nprocs;
 
+	// Before we do anything, initialize the cores array
+	for (i=0; i<BMK_MAX_CORES; i++) {
+		bmk_sys_data.core_data[i].procid = i;
+		bmk_sys_data.core_data[i].active_thread = 0;
+		bmk_sys_data.core_data[i].irq_handler = 0;
+	}
+
 	// Allow the user's code to initialize some core hardware
 	bmk_hardware_init();
 
@@ -33,13 +40,6 @@ void bmk_startup(void) {
 	// This function will initialize enabled cores with the application stack
 	bmk_level0_main();
 
-	// Now, wake up any active cores
-	nprocs = bmk_get_nprocs();
-
-	for (i=1; i<nprocs; i++) {
-		// TODO:
-
-	}
 
 	// Finally, call the primary-core main
 //	bmk_level1_main(0);

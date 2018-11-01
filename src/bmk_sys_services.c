@@ -71,9 +71,7 @@ void __attribute__((weak)) bmk_level1_main(uint32_t cid) {
 	if (prv_level1_main_func) {
 		prv_level1_main_func(cid);
 	} else {
-
 		if (cid == 0) {
-			bmk_scheduler_init();
 			bmk_main();
 		} else {
 			bmk_scheduler_nonprimary();
@@ -83,6 +81,14 @@ void __attribute__((weak)) bmk_level1_main(uint32_t cid) {
 
 // Assembly-call doesn't seem to teal with weak symbols
 void _bmk_level1_main(uint32_t cid) {
+	if (cid == 0) {
+		// Initialize the scheduler before unlocking non-primary cores
+		bmk_scheduler_init();
+
+		// Notify non-primary cores that they can run
+		c0_ready_key = UNLOCK_KEY;
+	}
+
 	bmk_level1_main(cid);
 }
 //	bmk_core_data_t *core = bmk_sys_get_core_data();

@@ -6,7 +6,16 @@
  */
 #include "bmk.h"
 #include "bmk_impl_sys_riscv.h"
+#include "bmk_int_debug.h"
 #include "bmk_config.h"
+
+#define BMK_SYS_DEBUG
+
+#ifdef BMK_SYS_DEBUG
+#define bmk_sys_debug(...) bmk_debug(__VA_ARGS__)
+#else
+#define bmk_sys_debug(...)
+#endif
 
 uint32_t bmk_get_procid(void) {
 	uint32_t ret;
@@ -44,14 +53,12 @@ void bmk_sys_release_nonprimary_cores(void) {
  * may be a change for them to react to
  */
 void bmk_sys_core_notify_event(uint64_t mask) {
-	// TODO:
 }
 
 /**
  * Internal function called by the scheduler to wait for an event
  */
 void bmk_sys_core_wait_event(void) {
-	// TODO:
 }
 
 /**
@@ -75,10 +82,41 @@ uint32_t bmk_sys_main_core_active(void) {
 }
 
 void bmk_sys_wait_proc_event(void) {
-	// TODO:
+	bmk_core_data_t *core = bmk_sys_get_core_data();
+	bmk_sys_debug("--> bmk_sys_wait_proc_event() procid=%d", core->procid);
+
+	while (!bmk_atomics_compare_and_swap(&core->impl_data.proc_event, 1, 0)) {
+		// spin
+	}
+	bmk_sys_debug("<-- bmk_sys_wait_proc_event() procid=%d", core->procid);
 }
 
-void bmk_sys_send_proc_event(uint8_t *mask, uint32_t mask_sz) {
-	// TODO:
+void bmk_sys_send_proc_event(bmk_cpuset_t *mask) {
+	bmk_core_data_t *core = bmk_sys_get_core_data();
+	uint32_t i;
+	bmk_sys_debug("--> bmk_sys_send_proc_event() procid=%d", core->procid);
+
+	if (mask) {
+
+		for (i=0; i<sizeof(bmk_cpuset_t)/sizeof(uint32_t); i++) {
+			if (mask->mask[i]) {
+				uint32_t j;
+				for (j=0; j<32; j++) {
+					if (bmk_cpuset_isset(32*i+j, mask) && (32*i+j) < BMK_MAX_CORES) {
+						bmk_sys_debug("-- bmk_sys_send_proc_event::signal core=%d procid=%d",
+								32*i+j, core->procid);
+						bmk_sys_data.core_data[32*i+j].impl_data.proc_event = 1;
+					}
+				}
+			}
+		}
+	} else {
+		// Notify all processors
+		for (i=0; i<BMK_MAX_CORES; i++) {
+			bmk_sys_data.core_data[i].impl_data.proc_event = 1;
+		}
+	}
+
+	bmk_sys_debug("<-- bmk_sys_send_proc_event() procid=%d", core->procid);
 }
 

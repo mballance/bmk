@@ -9,9 +9,12 @@
 #define INCLUDED_BMK_THREAD_TYPES_H
 #include <stdint.h>
 #include "bmk_int_atomics.h"
+#include "bmk_config.h"
 
 typedef int32_t (*bmk_thread_main_f)(void *ud);
-typedef uint64_t bmk_cpuset_t;
+typedef struct bmk_cpuset_s {
+	uint32_t		mask[((BMK_MAX_CORES-1)/32)+1];
+} bmk_cpuset_t;
 
 #include "bmk_int_context.h"
 #include "bmk_impl_scheduler.h"
