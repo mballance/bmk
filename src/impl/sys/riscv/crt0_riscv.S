@@ -150,7 +150,7 @@ reloc_loop_end:
     mul t1, t0, t1
     la t2, core_stack_sz
     add t2, t2, t1
-    ld t2, 0(t2)
+    lw t2, 0(t2)
 
     // Okay, now t2 has the stack size
     // and t4 has the stack base
@@ -177,11 +177,6 @@ no_stack:
  * Startup for non-primary cores
  */
 non_primary_startup:
-	// Wait for an IPI
-	wfi
-	j	non_primary_startup
-
-//  TRACEPOINT(600)
 
   // Kill some time to ensure C0 can initialize things
   li t1, 0
@@ -203,14 +198,25 @@ non_primary_startup:
   li t2, 8
   mul t0, t0, t2    // determine the offset
   add t1, t1, t0
-  lw t1, 0(t1)     // Load the stack pointer
+  ld t1, 0(t1)     // Load the stack pointer
 
   beq t1, zero, nonprimary_idle  // No stack configured
 
   // Initialize the core's stack
+  csrr	t0, mhartid // HW Thread Id
+  slli	t0, t0, 2 // multiply by 4
+  la	t2, core_stack_sz
+  add	t2, t2, t0  // Offset to stack size
+  lw	t2, 0(t2)	// Load the stack size
+  add	t1, t1, t2	// Top of stack
+  addi	sp, t1, -8
+
+  csrr a0, mhartid // HW Thread ID (core)
+  jal ra, _bmk_level1_main
 
   // Spin, since we haven't been activated
 nonprimary_idle:
+	wfi
 	j nonprimary_idle
 
 /********************************************************************

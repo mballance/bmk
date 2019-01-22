@@ -35,7 +35,8 @@ static inline void bmk_atomics_lock(bmk_atomic_t *ptr) {
 static inline void bmk_atomics_unlock(bmk_atomic_t *ptr) {
 //	fprintf(stdout, "--> bmk_atomics_unlock(%p)\n", ptr);
 //	fflush(stdout);
-	while (!__sync_bool_compare_and_swap(ptr, 1, 0)) { ; }
+//	while (!__sync_bool_compare_and_swap(ptr, 1, 0)) { ; }
+	*ptr = 0;
 //	fprintf(stdout, "<-- bmk_atomics_unlock(%p)\n", ptr);
 //	fflush(stdout);
 }

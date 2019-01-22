@@ -35,7 +35,12 @@ void bmk_scheduler_thread_exit(bmk_thread_t *t);
 
 void bmk_scheduler_thread_join(bmk_thread_t *t);
 
-void bmk_scheduler_thread_block(bmk_thread_t *t);
+void bmk_scheduler_thread_setaffinity(bmk_thread_t *t, bmk_cpuset_t *cpuset);
+
+/**
+ * Blocks the active thread
+ */
+void bmk_scheduler_thread_block(bmk_atomic_t *lock);
 
 void bmk_scheduler_thread_unblock(bmk_thread_t *t);
 

@@ -1,8 +1,10 @@
 
 #include "bmk_int_sys.h"
+#include "bmk_int_atomics.h"
 #include <stdint.h>
 
 static uint32_t uart_init = 0;
+static bmk_atomic_t emit_lock;
 
 void bmk_sys_emit(const char *str) {
 	uintptr_t uart_ctrl_addr = 0x10000000;
@@ -13,6 +15,8 @@ void bmk_sys_emit(const char *str) {
 		uint32_t baud_rate = 115200;
 		uint32_t divisor = uart_freq / (16 * baud_rate);
 
+		bmk_atomics_init(&emit_lock);
+
 		uart_ctrl_p[3] = 0x80; // enable DLAB
 		uart_ctrl_p[1] = (divisor >> 8);
 		uart_ctrl_p[0] = divisor;
@@ -20,6 +24,7 @@ void bmk_sys_emit(const char *str) {
 		uart_init = 1;
 	}
 
+	bmk_atomics_lock(&emit_lock);
 	while (*str) {
 		// outchar
 		while ((uart_ctrl_p[5] & 0x20) == 0) {
@@ -28,6 +33,7 @@ void bmk_sys_emit(const char *str) {
 		uart_ctrl_p[0] = *str;
 		str++;
 	}
+	bmk_atomics_unlock(&emit_lock);
 }
 
 void bmk_sys_exit(int code) {
