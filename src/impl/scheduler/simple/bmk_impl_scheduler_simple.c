@@ -193,6 +193,20 @@ void bmk_scheduler_thread_exit(bmk_thread_t *t) {
 
 	// Notify any waiters
 	bmk_event_signal(&prv_data.thread_exit_ev);
+<<<<<<< HEAD
+=======
+
+//	{
+//		uint32_t i;
+//		bmk_thread_t *tt = prv_data.thread_l;
+//		bmk_info_low("bmk_scheduler_thread_exit: %p", t);
+//
+//		for (i=0; i<10 && tt; i++) {
+//			bmk_info_low("  t=%p state=%d", tt, tt->sched_data.state);
+//			tt = tt->sched_data.next;
+//		}
+//	}
+>>>>>>> origin/master
 
 	// Don't return
 	bmk_scheduler_reschedule(1);
@@ -209,11 +223,18 @@ void bmk_scheduler_thread_join(bmk_thread_t *t) {
 
 	// We're now also hanging onto this thread
 	t->sched_data.refcnt++;
+	bmk_info_low("--> bmk_scheduler_join: %p", t);
 
 	while (t->sched_data.state != RunStateDead) {
 		bmk_event_wait(&prv_data.thread_exit_ev);
+<<<<<<< HEAD
+=======
+        bmk_info_low(" -- bmk_scheduler_join: wakeup %p %d", t, t->sched_data.state);
+>>>>>>> origin/master
 		bmk_scheduler_debug("  join: %p t.state=%d", t, t->sched_data.state);
 	}
+
+	bmk_info_low("<-- bmk_scheduler_join: %p", t);
 
 	// Free this thread
 	if (--t->sched_data.refcnt == 0) {
@@ -224,13 +245,25 @@ void bmk_scheduler_thread_join(bmk_thread_t *t) {
 			t, core_data->procid);
 }
 
+<<<<<<< HEAD
 void bmk_scheduler_thread_setaffinity(bmk_thread_t *t, bmk_cpuset_t *cpuset) {
+=======
+/**
+ * Blocks the active thread and waits for it to be awakened
+ *
+ * If lock is non-null, it is expected to be locked on
+ * entry, unlocked while the thread is blocked, and
+ * re-locked on exit
+ */
+void bmk_scheduler_thread_block(bmk_atomic_t *lock) {
+>>>>>>> origin/master
 	bmk_core_data_t *core_data = bmk_sys_get_core_data();
 	uint32_t is_active_thread = 0;
 	if (!t) {
 		t = core_data->active_thread;
 	}
 
+<<<<<<< HEAD
 	bmk_info_low("setaffinity thread=%p affinity=0x%08x", t, cpuset->mask[0]);
 
 	bmk_atomics_lock(&prv_data.lock);
@@ -274,6 +307,13 @@ void bmk_scheduler_thread_block(bmk_atomic_t *lock) {
 	bmk_scheduler_debug("--> bmk_scheduler_thread_block proc=%d thread=%p",
 			core_data->procid, active_t);
 
+=======
+	// The active thread is now blocked
+	// Select another thread and swap to that one
+	bmk_scheduler_debug("--> bmk_scheduler_thread_block proc=%d thread=%p",
+			core_data->procid, active_t);
+
+>>>>>>> origin/master
 	// Thread cannot run
 	bmk_atomics_lock(&prv_data.lock);
 	active_t->sched_data.state = RunStateBlocked;
