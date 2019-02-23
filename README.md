@@ -47,3 +47,4 @@ Once all configured cores have awakened, bmk_startp calls bmk_level1_main() for 
 
 The default implementation of bmk_level1_main() is to call bmk_main() for the primary core.
 
+
