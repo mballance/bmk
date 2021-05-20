@@ -18,3 +18,12 @@
   - No multi-core scheduler
   - No device-tree support
   
+
+# Board functions
+- Send a software interrupt to a specific core
+- Handle interrupt
+  - Delegate to a BMK function specific to handling software interrupt
+    - BMK itself must be aware of software interrupts
+  - Delegate to a BMK function specific to handling non-software interrupt
+    - User code wants to be aware of non-software interrupts
+  
