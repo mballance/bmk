@@ -19,5 +19,8 @@ setup(
   setup_requires=[
     'setuptools_scm',
   ],
+  install_requires=[
+      "pyhvl-rpc",
+  ],
 )
 
