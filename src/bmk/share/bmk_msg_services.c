@@ -33,7 +33,7 @@ static void int_debug(const char *fmt, ...) {
 	va_end(ap);
 }
 
-void bmk_info_low_v(const char *fmt, va_list ap) {
+BMK_SEMIHOST_ANN void  bmk_info_low_v(const char *fmt, va_list ap) {
 #ifndef BMK_HAVE_SEMIHOST
 	int res;
 	char buf[256];
@@ -53,6 +53,8 @@ void bmk_info_low_v(const char *fmt, va_list ap) {
 
 	// TODO: provide a BMK call for this
 	bmk_sys_emit(buf);
+#else
+	BMK_SEMIHOST_STMT;
 #endif /* BMK_HAVE_SEMIHOST */
 }
 
@@ -65,7 +67,7 @@ void bmk_info_mid(const char *fmt, ...) {
 	va_end(ap);
 }
 
-void bmk_info_mid_v(const char *fmt, va_list ap) {
+BMK_SEMIHOST_ANN void bmk_info_mid_v(const char *fmt, va_list ap) {
 #ifndef BMK_HAVE_SEMIHOST
 	char buf[256];
 	int res;
@@ -82,6 +84,8 @@ void bmk_info_mid_v(const char *fmt, va_list ap) {
 
 	// TODO: provide a BMK call for this
 	bmk_sys_emit(buf);
+#else
+	BMK_SEMIHOST_STMT;
 #endif /* BMK_HAVE_SEMIHOST */
 }
 
@@ -94,7 +98,7 @@ void bmk_info_high(const char *fmt, ...) {
 	va_end(ap);
 }
 
-void bmk_info_high_v(const char *fmt, va_list ap) {
+BMK_SEMIHOST_ANN void bmk_info_high_v(const char *fmt, va_list ap) {
 #ifndef BMK_HAVE_SEMIHOST
 	char buf[256];
 	int res;
@@ -111,6 +115,8 @@ void bmk_info_high_v(const char *fmt, va_list ap) {
 
 	// TODO: provide a BMK call for this
 	bmk_sys_emit(buf);
+#else
+	BMK_SEMIHOST_STMT;
 #endif /* BMK_HAVE_SEMIHOST */
 }
 
@@ -123,7 +129,7 @@ void bmk_error(const char *fmt, ...) {
 	va_end(ap);
 }
 
-void bmk_error_v(const char *fmt, va_list ap) {
+BMK_SEMIHOST_ANN void bmk_error_v(const char *fmt, va_list ap) {
 #ifndef BMK_HAVE_SEMIHOST
 	char buf[256];
 	int res;
@@ -141,6 +147,8 @@ void bmk_error_v(const char *fmt, va_list ap) {
 
 	// TODO: provide a BMK call for this
 	bmk_sys_emit(buf);
+#else
+	BMK_SEMIHOST_STMT;
 #endif /* BMK_HAVE_SEMIHOST */
 }
 
@@ -153,7 +161,7 @@ void bmk_fatal(const char *fmt, ...) {
 	va_end(ap);
 }
 
-void bmk_fatal_v(const char *fmt, va_list ap) {
+BMK_SEMIHOST_ANN void bmk_fatal_v(const char *fmt, va_list ap) {
 #ifndef BMK_HAVE_SEMIHOST
 	char buf[256];
 	int res;
@@ -175,6 +183,8 @@ void bmk_fatal_v(const char *fmt, va_list ap) {
 	// bail out
 	// TODO: provide a dedicated BMK panic-exit call
 	bmk_sys_exit(1);
+#else
+	BMK_SEMIHOST_STMT;
 #endif /* BMK_HAVE_SEMIHOST */
 }
 

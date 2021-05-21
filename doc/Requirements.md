@@ -21,9 +21,14 @@
 
 # Board functions
 - Send a software interrupt to a specific core
+  - bmk_sys_send_proc_event() - Send interrupt to selected processors
+  - bmk_sys_wait_proc_event() - 
 - Handle interrupt
   - Delegate to a BMK function specific to handling software interrupt
-    - BMK itself must be aware of software interrupts
+    - BMK itself must be aware of software interrupts (?)
+      - Unclear whether this is true. Board-support may be able to handle on its own
+        since it needs to get involved
   - Delegate to a BMK function specific to handling non-software interrupt
     - User code wants to be aware of non-software interrupts
+
   

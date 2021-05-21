@@ -5,8 +5,6 @@
  ****************************************************************************/
 #include "bmk_config.h"
 
-#define UNLOCK_KEY 0x55EA1234
-
 // .section .data
 // c0_ready: .word 0
 
@@ -83,7 +81,21 @@ _start:
 	csrw mscratch, t3
 
 	csrr t2, mhartid
+
+	// Fill in the coreid field
+	la t5, coreid_offset
+	lw t5, 0(t5)
+	add t0, t3, t5
+	sw t2, 0(t0)
+
+	// Now, decide whether we're the boot core or a
+	// secondary core
 	beqz t2, primary_core_startup
+
+	// Load up main_f for this core
+	la t5, main_f_offset
+	lw t5, 0(t5)
+	add t5, t3, t5
 
 	// Enable interrupts for the non-primary core,
 	// since we're relying on being awakened by
@@ -91,7 +103,9 @@ _start:
 	li    t0, (1 << 11)
 	csrrs t0, mie, t0
 
-
+	// Note: expects the following to be preserved
+	// t4 -- points to main_sp for the core
+	// t5 -- points to main_f for this core
 nonprimary_core_park:
 	wfi
 	// Load the primary stack-pointer location
@@ -100,10 +114,12 @@ nonprimary_core_park:
 	// See if we have a stack yet
 	beqz	t0, nonprimary_core_park
 
+	// Disable interrupts prior to entry
+	li    t1, (1 << 11)
+	csrrc t1, mie, t1
+
 	// Load the entry function
-	la		t3, main_f_offset
-	lw		t3, 0(t3)
-	lw		t1, 0(t3)
+	lw		t1, 0(t5)
 
 	// parameter is coreid
 	mv		a0, t2
@@ -111,8 +127,14 @@ nonprimary_core_park:
 
 	jalr	t1
 
+	nop
+	nop
+	nop
+	nop
+
 	// When we return, spin forever
 1:
+	wfi
 	j		1b
 
 	// Startup process for the primary core
@@ -144,6 +166,11 @@ zero_loop_end:
 	csrr a0, mhartid
 	call main
 
+	nop
+	nop
+	nop
+	nop
+
 	/*
 
   // Target address range is __data_start to _edata
@@ -167,6 +194,7 @@ reloc_loop_end:
 
   // On return, spin
 1:
+	wfi
 	j	1b
 
 /********************************************************************
@@ -176,7 +204,7 @@ reloc_loop_end:
  ********************************************************************/
 trap_handler:
 	// Save the current SP and grab the core-data pointer
-	csrrs sp, mscratch, sp
+	csrrw sp, mscratch, sp
 
     // Find the top
     addi sp, sp, 256-4
@@ -219,8 +247,8 @@ trap_handler:
 	sw t0, -4(sp)
 
 	// Restore the core-data pointer in mscratch
-    addi t0, sp, -(256-4)
-    csrw mscratch, t0
+    addi a0, sp, -(256-4)
+    csrw mscratch, a0
 
 	// Save the mepc
 	csrr t0, mepc
@@ -228,9 +256,12 @@ trap_handler:
 
 	// Adjust the sp before calling
 	addi sp, sp, -128
-	csrr a0, mcause
-	// TODO:
-//	la t0, _exception_handler
+	csrr a1, mcause
+
+	/**
+	 * exception_handler(core_data, mcause)
+	 */
+	la t0, bmk_exception_handler
 	jalr ra, t0
 
 	// On return, re-acquire the core-data from mscratch
@@ -280,6 +311,7 @@ trap_handler:
 	// Back where we came from
 	mret
 
+/*
 .globl bmk_sys_enable_interrupts
 bmk_sys_enable_interrupts:
 	li		t0, 0x800
@@ -294,6 +326,7 @@ bmk_sys_disable_interrupts:
 	and		t1, t1, t0
 	csrw	mstatus, t1
 	ret
+ */
 
 
 .globl bmk_int_release_nonprimary_cores

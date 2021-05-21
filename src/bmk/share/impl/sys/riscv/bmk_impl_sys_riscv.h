@@ -10,14 +10,12 @@
 
 typedef struct bmk_core_impl_data_s {
 
-	// Flag to signal a processor event
+	// Counter to track events
 	uint32_t		proc_event;
 
 } bmk_core_impl_data_t;
 
 #include "bmk_int_sys.h"
-
-
 
 
 #endif /* INCLUDED_BMK_IMPL_SYS_RISCV_H */

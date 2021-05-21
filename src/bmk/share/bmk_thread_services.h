@@ -17,11 +17,19 @@ extern "C" {
 
 
 static inline void bmk_cpuset_set(uint32_t cpu, bmk_cpuset_t *cpuset) {
+#if BMK_MAX_CORES <= 32
+	cpuset->mask[0] |= (1 << (cpu%32));
+#else
 	cpuset->mask[cpu/32] |= (1 << (cpu%32));
+#endif
 }
 
 static inline uint32_t bmk_cpuset_isset(uint32_t cpu, bmk_cpuset_t *cpuset) {
+#if BMK_MAX_CORES <= 32
+	return (cpuset->mask[0] & (1 << (cpu%32)));
+#else
 	return (cpuset->mask[cpu/32] & (1 << (cpu%32)));
+#endif
 }
 
 static inline void bmk_cpuset_clr(uint32_t cpu, bmk_cpuset_t *cpuset) {

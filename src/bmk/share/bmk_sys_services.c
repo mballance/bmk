@@ -15,29 +15,20 @@ static bmk_level1_main_f	prv_level1_main_func = 0;
 static bmk_main_f			prv_main_func = 0;
 //bmk_sys_data_t				bmk_sys_data;
 
-uint32_t					c0_ready_key;
-// Stack pointers for each core
-void						*core_stack[BMK_MAX_CORES];
-uint32_t					core_stack_sz[BMK_MAX_CORES];
+const uint32_t sizeof_bmk_core_data_s = sizeof(bmk_core_data_t);
+const uint32_t main_sp_offset = (uint32_t)&((bmk_core_data_t *)0)->main_sp;
+const uint32_t main_f_offset = (uint32_t)&((bmk_core_data_t *)0)->main_f;
+const uint32_t coreid_offset = (uint32_t)&((bmk_core_data_t *)0)->coreid;
+bmk_core_data_t				core_data[BMK_MAX_CORES] = {0};
 
 void bmk_sys_init(void) {
 	int i;
 
-	c0_ready_key = 0;
 //	for (i=0; i<((BMK_MAX_CORES-1)/32)+1; i++) {
 //		bmk_sys_data.core_release_mask[i] = 0;
 //	}
 //	bmk_sys_data.core_release_mask[i] = 1;
 
-	for (i=0; i<BMK_MAX_CORES; i++) {
-		core_stack[i] = 0;
-		core_stack_sz[i] = 0;
-		/*
-		bmk_sys_data.core_data[i].procid = i;
-		bmk_sys_data.core_data[i].active_thread = 0;
-		bmk_sys_data.core_data[i].irq_handler = 0;
-		 */
-	}
 }
 
 void __attribute__((weak)) bmk_hardware_init(void) {
@@ -46,6 +37,10 @@ void __attribute__((weak)) bmk_hardware_init(void) {
 
 void __attribute__((weak)) bmk_core0_init(void) {
 
+}
+
+bmk_core_data_t *bmk_sys_get_core_data(void) {
+	return &core_data[bmk_get_procid()];
 }
 
 void bmk_set_level0_main_func(bmk_main_f f) {
@@ -58,9 +53,20 @@ void __attribute__((weak)) bmk_level0_main(void) {
 	}
 }
 
-void bmk_init_core(uint32_t cid, void *stk, uint32_t stk_sz) {
-	core_stack[cid] = stk;
-	core_stack_sz[cid] = stk_sz;
+void bmk_init_core(
+		uint32_t cid,
+		void (*main_f)(uint32_t),
+		void *stk, uint32_t stk_sz) {
+	bmk_cpuset_t mask;
+
+	bmk_cpuset_zero(&mask);
+	core_data[cid].main_f = main_f;
+	core_data[cid].main_sp = stk + stk_sz - sizeof(void *);
+
+	bmk_cpuset_set(cid, &mask);
+
+	// Notify core that it can run
+	bmk_sys_send_proc_event(&mask);
 }
 
 void bmk_set_level1_main_func(bmk_level1_main_f f) {
@@ -88,8 +94,6 @@ void _bmk_level1_main(uint32_t cid) {
 		// TODO:
 		bmk_scheduler_init(0);
 
-		// Notify non-primary cores that they can run
-		c0_ready_key = UNLOCK_KEY;
 	}
 
 	bmk_level1_main(cid);

@@ -8,6 +8,7 @@
 #define INCLUDED_BMK_H
 #include <stdint.h>
 #include "bmk_thread_services.h"
+#include "bmk_mem_services.h"
 #include "bmk_msg_services.h"
 #include "bmk_sys_services.h"
 

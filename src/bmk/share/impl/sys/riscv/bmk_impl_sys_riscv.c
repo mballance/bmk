@@ -76,6 +76,21 @@ uint32_t bmk_sys_main_core_active(void) {
 	return 0;
 }
 
+void bmk_sys_enable_interrupts() {
+	unsigned int mie;
+    __asm__ volatile ("csrrs %0, mie, %1\n"
+                      : "=r" (mie)
+                      : "r" (1 << 11));
+}
+
+void bmk_sys_disable_interrupts() {
+	unsigned int mie;
+    __asm__ volatile ("csrrc %0, mie, %1\n"
+                      : "=r" (mie)
+                      : "r" (1 << 11));
+}
+
+#ifdef UNDEFINED
 void bmk_sys_wait_proc_event(void) {
 	bmk_core_data_t *core = bmk_sys_get_core_data();
 //	bmk_sys_debug("--> bmk_sys_wait_proc_event() procid=%d", core->procid);
@@ -116,4 +131,5 @@ void bmk_sys_send_proc_event(bmk_cpuset_t *mask) {
 	bmk_sys_debug("<-- bmk_sys_send_proc_event() procid=%d", core->procid);
 	 */
 }
+#endif
 

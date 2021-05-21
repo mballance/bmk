@@ -15,12 +15,31 @@
 #include "bmk_int_scheduler.h"
 
 /**
+ * BMK_SEMIHOST_ANN must be defined to whatever
+ * annotation should be applied to semi-hosting
+ * functions that must not be inlined
+ */
+#ifndef BMK_SEMIHOST_ANN
+#define BMK_SEMIHOST_ANN __attribute__((noinline))
+#endif
+
+/**
+ * BMK_SEMIHOST_STMT must be defined to a value
+ * that will cause an empty function to not
+ * be collapsed.
+ */
+#ifndef BMK_SEMIHOST_STMT
+#define BMK_SEMIHOST_STMT asm("")
+#endif
+
+/**
  * Holds key core-specific data
  */
 typedef struct bmk_core_data_s {
-	uint32_t					exception_state[BMK_EX_STACK_SZ];
+	uint32_t					exception_stack[BMK_EX_STACK_SZ];
 	uint32_t					*main_sp;
 	void (*main_f)(uint32_t);
+	uint32_t					coreid;
 
 	// Allow implementation to provide specific data if desired
 	bmk_core_impl_data_t		impl_data;
@@ -30,6 +49,7 @@ typedef struct bmk_core_data_s {
 extern const uint32_t sizeof_bmk_core_data_s;
 extern const uint32_t main_sp_offset;
 extern const uint32_t main_f_offset;
+extern const uint32_t coreid_offset;
 
 // Keep individual fields for simplicity of access from ASM
 
