@@ -24,7 +24,6 @@ typedef struct bmk_thread_core_s {
 
 typedef struct bmk_thread_s {
 	bmk_context_t					ctxt;
-//	bmk_cpuset_t					procmask;
 	bmk_thread_main_f				main_f;
 	void							*main_ud;
 	uint32_t						alive;

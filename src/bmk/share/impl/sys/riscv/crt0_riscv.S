@@ -43,18 +43,9 @@ _start:
   mv x30, x1
   mv x31, x1
 
-  // Initialize exception handling
+	// Initialize exception handling
 	la t0, trap_handler
 	csrw mtvec, t0
-
-/*
-	csrwi mstatus, 0
-	csrwi mideleg, 0 // disable delegation
-	csrwi medeleg, 0
-
-  // Disable all interrupts
-  csrwi mie, 0
- */
 
 	// Locate the core-specific core data using
 	// the hartid
@@ -88,14 +79,14 @@ _start:
 	add t0, t3, t5
 	sw t2, 0(t0)
 
-	// Now, decide whether we're the boot core or a
-	// secondary core
-	beqz t2, primary_core_startup
-
 	// Load up main_f for this core
 	la t5, main_f_offset
 	lw t5, 0(t5)
 	add t5, t3, t5
+
+	// Now, decide whether we're the boot core or a
+	// secondary core
+	beqz t2, primary_core_startup
 
 	// Enable interrupts for the non-primary core,
 	// since we're relying on being awakened by
@@ -104,27 +95,24 @@ _start:
 	csrrs t0, mie, t0
 
 	// Note: expects the following to be preserved
+	// t3 -- points to core_data for this core
 	// t4 -- points to main_sp for the core
 	// t5 -- points to main_f for this core
 nonprimary_core_park:
 	wfi
 	// Load the primary stack-pointer location
-	lw		t0, 0(t4)
+	lw		sp, 0(t4)
 
 	// See if we have a stack yet
-	beqz	t0, nonprimary_core_park
+	beqz	sp, nonprimary_core_park
 
 	// Disable interrupts prior to entry
 	li    t1, (1 << 11)
 	csrrc t1, mie, t1
 
-	// Load the entry function
-	lw		t1, 0(t5)
-
-	// parameter is coreid
-	mv		a0, t2
-	mv		sp, t0
-
+	// Call bmk_entry() with core_data as the single parameter
+	mv a0, t3
+	call bmk_entry
 	jalr	t1
 
 	nop
@@ -138,13 +126,18 @@ nonprimary_core_park:
 	j		1b
 
 	// Startup process for the primary core
+	// Note: expects the following to be preserved
+	// t3 -- points to core_data for this core
+	// t4 -- points to main_sp for the core
+	// t5 -- points to main_f for this core
 primary_core_startup:
 
 	// Initialize stack to the global stack
 	la sp, _stack_top
 	addi sp, sp, -4
-	// Store the stack top to core-data
-	sw sp, 0(t3)
+
+	// Store the stack top to core-data (main_sp)
+	sw sp, 0(t4)
 
 #ifndef BMK_BSS_CLEARED
 	/* clear BSS */
@@ -160,11 +153,13 @@ zero_loop:
 zero_loop_end:
 #endif /* BMK_BSS_CLEARED */
 
-	// TODO: Call basic initialization
+	// Fill in the main_f in core_data
+	la t0, main
+	sw t0, 0(t5)
 
-	// Call main() with coreid as the single parameter
-	csrr a0, mhartid
-	call main
+	// Call bmk_entry() with core_data as the single parameter
+	mv a0, t3
+	call bmk_entry
 
 	nop
 	nop
@@ -310,32 +305,6 @@ trap_handler:
 
 	// Back where we came from
 	mret
-
-/*
-.globl bmk_sys_enable_interrupts
-bmk_sys_enable_interrupts:
-	li		t0, 0x800
-	csrw	mie, t0
-	csrwi	mstatus, 0x8
-	ret
-
-.globl bmk_sys_disable_interrupts
-bmk_sys_disable_interrupts:
-	li		t0, ~0x8
-	csrr	t1, mstatus
-	and		t1, t1, t0
-	csrw	mstatus, t1
-	ret
- */
-
-
-.globl bmk_int_release_nonprimary_cores
-bmk_int_release_nonprimary_cores:
-	// Release the other cores
-//	la t0, c0_ready
-//	li t1, UNLOCK_KEY
-//	sw t1, 0(t0)
-	ret
 
   .size  _start, .-_start
 

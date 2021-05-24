@@ -25,6 +25,8 @@ typedef struct bmk_scheduler_data_s {
  */
 void bmk_scheduler_init(bmk_scheduler_data_t *sched);
 
+bmk_thread_t *bmk_scheduler_active_thread();
+
 /**
  * Internal function to add a new thread to the scheduler
  */
@@ -41,9 +43,11 @@ void bmk_scheduler_thread_join(bmk_thread_t *t);
 void bmk_scheduler_thread_setaffinity(bmk_thread_t *t, bmk_cpuset_t *cpuset);
 
 /**
- * Blocks the active thread
+ * Blocks the active thread.
+ * - lock (optional) must be locked on entry and unlocked within _block
  */
-void bmk_scheduler_thread_block(bmk_atomic_t *lock);
+void bmk_scheduler_thread_block(
+		bmk_atomic_t 		*lock);
 
 void bmk_scheduler_thread_unblock(bmk_thread_t *t);
 

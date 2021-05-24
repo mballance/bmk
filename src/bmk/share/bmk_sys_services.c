@@ -20,6 +20,7 @@ const uint32_t main_sp_offset = (uint32_t)&((bmk_core_data_t *)0)->main_sp;
 const uint32_t main_f_offset = (uint32_t)&((bmk_core_data_t *)0)->main_f;
 const uint32_t coreid_offset = (uint32_t)&((bmk_core_data_t *)0)->coreid;
 bmk_core_data_t				core_data[BMK_MAX_CORES] = {0};
+bmk_core_data_t				*core_data_p[BMK_MAX_CORES] = {0};
 
 void bmk_sys_init(void) {
 	int i;
@@ -40,7 +41,7 @@ void __attribute__((weak)) bmk_core0_init(void) {
 }
 
 bmk_core_data_t *bmk_sys_get_core_data(void) {
-	return &core_data[bmk_get_procid()];
+	return core_data_p[bmk_get_procid()];
 }
 
 void bmk_set_level0_main_func(bmk_main_f f) {

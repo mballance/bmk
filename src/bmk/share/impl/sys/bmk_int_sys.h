@@ -39,10 +39,14 @@ typedef struct bmk_core_data_s {
 	uint32_t					exception_stack[BMK_EX_STACK_SZ];
 	uint32_t					*main_sp;
 	void (*main_f)(uint32_t);
+	bmk_thread_t				main_thread;
 	uint32_t					coreid;
 
 	// Allow implementation to provide specific data if desired
 	bmk_core_impl_data_t		impl_data;
+
+	// Each core has specific scheduler data
+	bmk_scheduler_impl_data_t	sched_data;
 } bmk_core_data_t;
 
 // Constant that can be used to obtain the core-data size
@@ -51,7 +55,16 @@ extern const uint32_t main_sp_offset;
 extern const uint32_t main_f_offset;
 extern const uint32_t coreid_offset;
 
+extern bmk_core_data_t *core_data_p[BMK_MAX_CORES];
+
 // Keep individual fields for simplicity of access from ASM
+
+/**
+ * Entrypoint to BMK-proper from boot code. Runs
+ * any global and/or per-core initialization and executes
+ * the main function for the core
+ */
+void bmk_entry(bmk_core_data_t *core_data);
 
 /**
  * Called by boot code to execute the startup procedure

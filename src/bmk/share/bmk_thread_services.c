@@ -13,7 +13,7 @@
 
 #undef BMK_THREAD_DEBUG
 #ifdef BMK_THREAD_DEBUG
-#define bmk_thread_debug(...) bmk_debug(__VA_ARGS__)
+#define bmk_thread_debug(...) bmk_thread_debug(__VA_ARGS__)
 #else
 #define bmk_thread_debug(...)
 #endif
@@ -79,11 +79,11 @@ void bmk_thread_init_cpuset(
 
 void bmk_thread_yield(void) {
 	bmk_core_data_t *core_data = bmk_sys_get_core_data();
-	bmk_thread_debug("--> bmk_thread_yield: %d", core_data->procid);
+	bmk_thread_debug("--> bmk_thread_yield: %d", core_data->coreid);
 
 	bmk_scheduler_reschedule(0);
 
-	bmk_thread_debug("<-- bmk_thread_yield: %d", core_data->procid);
+	bmk_thread_debug("<-- bmk_thread_yield: %d", core_data->coreid);
 }
 
 void bmk_thread_join(bmk_thread_t *t) {
@@ -100,11 +100,7 @@ void bmk_thread_setaffinity(
 }
 
 bmk_thread_t *bmk_thread_self(void) {
-	// TODO:
-	/*
-	bmk_core_data_t *core_data = bmk_sys_get_core_data();
-	return core_data->active_thread;
-	 */
+	return bmk_scheduler_active_thread();
 }
 
 void bmk_mutex_init(bmk_mutex_t *m) {
@@ -119,17 +115,15 @@ void bmk_mutex_lock(bmk_mutex_t *m) {
 	bmk_atomics_lock(&m->lock);
 	if (!m->owner) {
 		// Now we own it
-		bmk_debug(" -- bmk_mutex_lock [OWN] m=%p %d", m, bmk_get_procid());
+		bmk_thread_debug(" -- bmk_mutex_lock [OWN] m=%p %d", m, bmk_get_procid());
 		m->owner = bmk_thread_self();
 	} else {
 		bmk_thread_t *this_t = bmk_thread_self();
+		bmk_thread_debug("Add thread: this_t=%p next=%p waiters=%p", this_t, this_t->next, m->waiters);
 		this_t->next = m->waiters;
 		m->waiters = this_t;
 
-		bmk_debug(" -- bmk_mutex_lock [WAIT] m=%p %d", m, bmk_get_procid());
-
-		// Unlock until we come back
-//		bmk_atomics_unlock(&m->lock);
+		bmk_thread_debug(" -- bmk_mutex_lock [WAIT] m=%p %d", m, bmk_get_procid());
 
 		// Suspend the thread
 		while (1) {
@@ -139,14 +133,10 @@ void bmk_mutex_lock(bmk_mutex_t *m) {
 			// Wait for a new thread to be selected
 //			bmk_scheduler_reschedule(0);
 
-//			bmk_atomics_lock(&m->lock);
 			if (!m->owner) {
 				// Now we own the mutex
 				m->owner = this_t;
 				break;
-			} else {
-				// Unlock until we come around again
-//				bmk_atomics_unlock(&m->lock);
 			}
 		}
 	}
@@ -159,10 +149,11 @@ void bmk_mutex_lock(bmk_mutex_t *m) {
 void bmk_mutex_unlock(bmk_mutex_t *m) {
 	bmk_thread_debug("--> bmk_mutex_unlock %p %d", m, bmk_get_procid());
 	bmk_atomics_lock(&m->lock);
-	bmk_debug(" -- bmk_mutex_unlock m=%p %d", m, bmk_get_procid());
+	bmk_thread_debug(" -- bmk_mutex_unlock m=%p %d", m, bmk_get_procid());
 	m->owner = 0;
 	while (m->waiters) {
 		bmk_thread_t *t = m->waiters;
+		bmk_thread_debug("About to unblock %p (next=%p)", t, t->next);
 		m->waiters = t->next;
 		bmk_scheduler_thread_unblock(t);
 	}
@@ -183,7 +174,7 @@ void bmk_cond_wait(bmk_cond_t *c, bmk_mutex_t *m) {
 	// We're protected by the existing mutex lock
 	this_t->next = c->waiters;
 	c->waiters = this_t;
-	bmk_debug(" -- bmk_cond_wait: %p c->waiters=%p", c, c->waiters);
+	bmk_thread_debug(" -- bmk_cond_wait: %p c->waiters=%p", c, c->waiters);
 //	bmk_atomics_unlock(&c->lock);
 
 	bmk_mutex_unlock(m);
@@ -203,7 +194,7 @@ void bmk_cond_signal(bmk_cond_t *c) {
 	bmk_thread_debug("--> bmk_cond_signal cond=%p %d", c, bmk_get_procid());
 
 //	bmk_atomics_lock(&c->lock);
-	bmk_debug(" -- bmk_cond_signal: %p c->waiters=%p", c, c->waiters);
+	bmk_thread_debug(" -- bmk_cond_signal: %p c->waiters=%p", c, c->waiters);
 	if (c->waiters) {
 		unblock_thread = c->waiters;
 		c->waiters = unblock_thread->next;

@@ -8,8 +8,8 @@ BARE_MK_INCLUDES += $(BMK_DIR)/impl/context/riscv/rv32.mk
 BARE_MK_INCLUDES += $(BMK_DIR)/impl/mem/generic/generic.mk
 BARE_MK_INCLUDES += $(BMK_DIR)/impl/sys/riscv/sys_riscv.mk
 BARE_MK_INCLUDES += $(BMK_DIR)/impl/scheduler/simple/scheduler_simple.mk
-# BARE_MK_INCLUDES += $(BMK_DIR)/src/impl/debug/msg/debug_msg.mk
-BARE_MK_INCLUDES += $(BMK_DIR)/impl/debug/null/debug_null.mk
+BARE_MK_INCLUDES += $(BMK_DIR)/impl/debug/msg/debug_msg.mk
+#BARE_MK_INCLUDES += $(BMK_DIR)/impl/debug/null/debug_null.mk
 
 include $(BARE_MK_INCLUDES)
 

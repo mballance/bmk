@@ -24,13 +24,13 @@ typedef struct bmk_thread_scheduler_data_s {
 	run_state_e					state;
 	struct bmk_event_s			*event;
 	uint32_t					refcnt;
+	uint32_t					coreid;
 } bmk_thread_scheduler_data_t;
 
 typedef struct bmk_scheduler_impl_data_s {
-
+	struct bmk_thread_s			*active;
+//	struct bmk_thread_s			main_thread;
 } bmk_scheduler_impl_data_t;
-
-
 
 
 #endif /* INCLUDED_BMK_IMPL_SCHEDULER_H */

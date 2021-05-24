@@ -12,26 +12,25 @@
 #include "bmk_int_debug.h"
 #include "bmk_int_scheduler.h"
 
-#undef DEBUG_SCHEDULER
+#define DEBUG_SCHEDULER
 #ifdef DEBUG_SCHEDULER
 #define bmk_scheduler_debug(...) bmk_debug(__VA_ARGS__)
 #else
 #define bmk_scheduler_debug(...)
 #endif
 
-#ifdef UNDEFINED
 // #ifdef DEBUG_SCHEDULER
 // #define scheduler_debug(...) bmk_scheduler_debug(__)
 
 typedef struct bmk_scheduler_simple_data_s {
 	bmk_atomic_t			lock;
-	uint32_t				changed;
-	bmk_thread_t			*thread_l;
-	bmk_event_t				thread_exit_ev;
-
+	bmk_cpuset_t			idle_cores;
+	uint32_t				core_spinlock_ev[BMK_NUM_CORES];
 } bmk_scheduler_simple_data_t;
 
 static bmk_scheduler_simple_data_t		prv_data = {0};
+
+#ifdef UNDEFINED
 
 static bmk_thread_t *bmk_simple_scheduler_get_next_thread(
 		bmk_core_data_t 	*core_data,
@@ -145,9 +144,11 @@ static bmk_thread_t *bmk_simple_scheduler_get_next_thread(
 #endif
 
 void bmk_scheduler_init(bmk_scheduler_data_t *sched) {
-#ifdef UNDEFINED
 	bmk_core_data_t *core_data = bmk_sys_get_core_data();
 	bmk_scheduler_debug("--> bmk_scheduler_init()");
+	core_data->main_thread.sched_data.coreid = core_data->coreid;
+	sched->impl_data.active = &core_data->main_thread;
+#ifdef UNDEFINED
 	bmk_atomics_init(&prv_data.lock);
 	bmk_event_init(&prv_data.thread_exit_ev);
 
@@ -163,8 +164,13 @@ void bmk_scheduler_init(bmk_scheduler_data_t *sched) {
 	core_data->active_thread = &core_data->main_thread;
 	bmk_atomics_unlock(&prv_data.lock);
 
-	bmk_scheduler_debug("<-- bmk_scheduler_init()");
 #endif
+	bmk_scheduler_debug("<-- bmk_scheduler_init()");
+}
+
+bmk_thread_t *bmk_scheduler_active_thread() {
+	bmk_core_data_t *core_data = bmk_sys_get_core_data();
+	return core_data->sched_data.active;
 }
 
 void bmk_scheduler_thread_new(bmk_thread_t *t) {
@@ -261,8 +267,9 @@ void bmk_scheduler_thread_setaffinity(bmk_thread_t *t, bmk_cpuset_t *cpuset) {
  * re-locked on exit
  */
 void bmk_scheduler_thread_block(bmk_atomic_t *lock) {
-#ifdef UNDEFINED
 	bmk_core_data_t *core_data = bmk_sys_get_core_data();
+	bmk_scheduler_debug("--> bmk_scheduler_thread_block");
+#ifdef UNDEFINED
 	uint32_t is_active_thread = 0;
 	if (!t) {
 		t = core_data->active_thread;
@@ -294,63 +301,66 @@ void bmk_scheduler_thread_block(bmk_atomic_t *lock) {
 		bmk_scheduler_reschedule(0);
 	}
 #endif
-}
 
-#ifdef UNDEFINED
-/**
- * Blocks the active thread and waits for it to be awakened
- *
- * If lock is non-null, it is expected to be locked on
- * entry, unlocked while the thread is blocked, and
- * re-locked on exit
- */
-void bmk_scheduler_thread_block(bmk_atomic_t *lock) {
-	bmk_core_data_t *core_data = bmk_sys_get_core_data();
-	bmk_thread_t *active_t=core_data->active_thread, *next_t;
-
-	// The active thread is now blocked
-	// Select another thread and swap to that one
-	bmk_scheduler_debug("--> bmk_scheduler_thread_block proc=%d thread=%p",
-			core_data->procid, active_t);
-
-=======
-	// The active thread is now blocked
-	// Select another thread and swap to that one
-	bmk_scheduler_debug("--> bmk_scheduler_thread_block proc=%d thread=%p",
-			core_data->procid, active_t);
-
->>>>>>> origin/master
-	// Thread cannot run
-	bmk_atomics_lock(&prv_data.lock);
-	active_t->sched_data.state = RunStateBlocked;
-	bmk_atomics_unlock(&prv_data.lock);
-
-	while (1) {
-		if (lock) {
-			bmk_atomics_unlock(lock);
-		}
-		bmk_scheduler_reschedule(1);
-
-		if (lock) {
-			bmk_atomics_lock(lock);
-		}
-		bmk_atomics_lock(&prv_data.lock);
-		if (active_t->sched_data.state != RunStateBlocked) {
-			bmk_atomics_unlock(&prv_data.lock);
-			break;
-		} else {
-			bmk_atomics_unlock(&prv_data.lock);
-		}
+	if (lock) {
+		bmk_atomics_unlock(lock);
 	}
 
-	bmk_scheduler_debug("<-- bmk_scheduler_thread_block proc=%d thread=%p",
-			core_data->procid, active_t);
+	{
+		uint32_t num_spins, num_idles;
+		uint32_t init_spinlock_val, curr_spinlock_val;
+
+		/*
+		bmk_atomics_lock(&prv_data.lock);
+		init_spinlock_val = prv_data.core_spinlock_ev[core_data->coreid];
+		bmk_atomics_unlock(&prv_data.lock);
+
+		// Spin for a bit first
+		for (num_spins=0; num_spins<16; num_spins++) {
+			curr_spinlock_val = prv_data.core_spinlock_ev[core_data->coreid];
+
+			if (curr_spinlock_val != init_spinlock_val) {
+				break;
+			}
+
+			for (num_idles=0; num_idles<16; num_idles++) {
+				;
+			}
+		}
+
+		if (curr_spinlock_val == init_spinlock_val) {
+		 */
+			bmk_atomics_lock(&prv_data.lock);
+			bmk_cpuset_set(core_data->coreid, &prv_data.idle_cores);
+			bmk_atomics_unlock(&prv_data.lock);
+
+			bmk_scheduler_debug("--> core %d sleeping", core_data->coreid);
+			bmk_sys_wait_proc_event();
+			bmk_scheduler_debug("<-- core %d sleeping", core_data->coreid);
+
+			bmk_atomics_lock(&prv_data.lock);
+			bmk_cpuset_clr(core_data->coreid, &prv_data.idle_cores);
+			bmk_atomics_unlock(&prv_data.lock);
+			/*
+		} else {
+			bmk_scheduler_debug("-- core %d spinlock worked", core_data->coreid);
+		}
+		 */
+	}
+	/*
+	 */
+
+	if (lock) {
+		bmk_atomics_lock(lock);
+	}
+
+	bmk_scheduler_debug("<-- bmk_scheduler_thread_block");
 }
-#endif
 
 void bmk_scheduler_thread_unblock(bmk_thread_t *t) {
-#ifdef UNDEFINED
+	bmk_scheduler_debug("--> bmk_scheduler_thread_unblock");
 	bmk_core_data_t *core_data = bmk_sys_get_core_data();
+#ifdef UNDEFINED
 	bmk_scheduler_debug("--> bmk_scheduler_thread_unblock procid=%d thread=%p",
 			core_data->procid, t);
 	// Add back to the active list
@@ -363,6 +373,31 @@ void bmk_scheduler_thread_unblock(bmk_thread_t *t) {
 	bmk_scheduler_debug("<-- bmk_scheduler_thread_unblock procid=%d thread=%p",
 			core_data->procid, t);
 #endif
+
+	// See if the target processor is sleeping
+	{
+		bmk_cpuset_t idle = {0};
+		uint32_t sleeping;
+
+		bmk_atomics_lock(&prv_data.lock);
+		sleeping = bmk_cpuset_isset(t->sched_data.coreid, &prv_data.idle_cores);
+		// Nudge the spinlock data in case the core is still spinning
+		prv_data.core_spinlock_ev[t->sched_data.coreid] += 1;
+		bmk_atomics_unlock(&prv_data.lock);
+
+		if (sleeping) {
+			bmk_cpuset_set(t->sched_data.coreid, &idle);
+			bmk_scheduler_debug("--> Wakeup core %d", t->sched_data.coreid);
+			bmk_sys_send_proc_event(&idle);
+			bmk_scheduler_debug("<-- Wakeup core %d", t->sched_data.coreid);
+		} else {
+			bmk_scheduler_debug("-- Core %d is not sleeping", t->sched_data.coreid);
+		}
+	}
+	/*
+	 */
+
+	bmk_scheduler_debug("<-- bmk_scheduler_thread_unblock");
 }
 
 // Reschedule operates for a given core

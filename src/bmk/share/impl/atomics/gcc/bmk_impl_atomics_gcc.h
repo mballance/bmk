@@ -22,23 +22,17 @@ static inline void bmk_atomics_init(bmk_atomic_t *ptr) {
  * Internal function to lock a memory location
  */
 static inline void bmk_atomics_lock(bmk_atomic_t *ptr) {
-//	fprintf(stdout, "--> bmk_atomics_lock(%p)\n", ptr);
-//	fflush(stdout);
-	while (!__sync_bool_compare_and_swap(ptr, 0, 1)) { ; }
-//	fprintf(stdout, "<-- bmk_atomics_lock(%p)\n", ptr);
-//	fflush(stdout);
+	// Spin as long as the previous value was non-zero
+	// Once we get a previous value of zero, we know
+	// we've successfully locked
+	while (__sync_lock_test_and_set(ptr, 1)) { ; }
 }
 
 /**
  * Internal function to unlock a memory location
  */
 static inline void bmk_atomics_unlock(bmk_atomic_t *ptr) {
-//	fprintf(stdout, "--> bmk_atomics_unlock(%p)\n", ptr);
-//	fflush(stdout);
-//	while (!__sync_bool_compare_and_swap(ptr, 1, 0)) { ; }
-	*ptr = 0;
-//	fprintf(stdout, "<-- bmk_atomics_unlock(%p)\n", ptr);
-//	fflush(stdout);
+	__sync_lock_test_and_set(ptr, 0);
 }
 
 static inline uint32_t bmk_atomics_compare_and_swap(bmk_atomic_t *ptr, uint32_t oldval, uint32_t newval) {

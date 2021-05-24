@@ -21,4 +21,3 @@
 
 // #define BMK_HAVE_SEMIHOST
 
-/* #ifdef BMK_HAVE_SEMIHOST */
