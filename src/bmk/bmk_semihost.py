@@ -6,7 +6,6 @@ Created on May 20, 2021
 
 import hvlrpc
 from ctypes import *
-from posix import nice
 
 @hvlrpc.api_imp
 class BmkSemihost(object):

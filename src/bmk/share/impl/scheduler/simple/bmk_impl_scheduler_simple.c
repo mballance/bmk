@@ -1,9 +1,24 @@
-/*
+/****************************************************************************
+ * Copyright 2018-2021 Matthew Ballance
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *
  * bmk_impl_scheduler_simple.c
  *
  *  Created on: Mar 17, 2018
  *      Author: ballance
- */
+ ****************************************************************************/
 #include <string.h>
 #include "bmk_thread_types.h"
 #include "bmk_thread_services.h"
@@ -12,19 +27,24 @@
 #include "bmk_int_debug.h"
 #include "bmk_int_scheduler.h"
 
-#define DEBUG_SCHEDULER
+#undef DEBUG_SCHEDULER
 #ifdef DEBUG_SCHEDULER
 #define bmk_scheduler_debug(...) bmk_debug(__VA_ARGS__)
 #else
 #define bmk_scheduler_debug(...)
 #endif
 
-// #ifdef DEBUG_SCHEDULER
-// #define scheduler_debug(...) bmk_scheduler_debug(__)
+#undef USE_SPINLOCK
 
 typedef struct bmk_scheduler_simple_data_s {
 	bmk_atomic_t			lock;
+	/**
+	 * Bitmask that holds set of currently-idle cores
+	 */
 	bmk_cpuset_t			idle_cores;
+	/**
+	 * Counter used to signal imminent wakeup for spinlock
+	 */
 	uint32_t				core_spinlock_ev[BMK_NUM_CORES];
 } bmk_scheduler_simple_data_t;
 
@@ -307,28 +327,34 @@ void bmk_scheduler_thread_block(bmk_atomic_t *lock) {
 	}
 
 	{
+#ifdef USE_SPINLOCK
 		uint32_t num_spins, num_idles;
 		uint32_t init_spinlock_val, curr_spinlock_val;
+		volatile uint32_t *core_spinlock_ev_ptr;
 
-		/*
+		core_spinlock_ev_ptr = &prv_data.core_spinlock_ev[core_data->coreid];
+
 		bmk_atomics_lock(&prv_data.lock);
 		init_spinlock_val = prv_data.core_spinlock_ev[core_data->coreid];
 		bmk_atomics_unlock(&prv_data.lock);
 
 		// Spin for a bit first
-		for (num_spins=0; num_spins<16; num_spins++) {
-			curr_spinlock_val = prv_data.core_spinlock_ev[core_data->coreid];
+		for (num_spins=0; num_spins<64; num_spins++) {
+			curr_spinlock_val = *core_spinlock_ev_ptr;
 
 			if (curr_spinlock_val != init_spinlock_val) {
 				break;
 			}
 
 			for (num_idles=0; num_idles<16; num_idles++) {
-				;
+				// Ensure loop isn't optimized out
+				asm("");
 			}
 		}
 
 		if (curr_spinlock_val == init_spinlock_val) {
+#endif /* USE_SPINLOCK */
+		/*
 		 */
 			bmk_atomics_lock(&prv_data.lock);
 			bmk_cpuset_set(core_data->coreid, &prv_data.idle_cores);
@@ -341,10 +367,12 @@ void bmk_scheduler_thread_block(bmk_atomic_t *lock) {
 			bmk_atomics_lock(&prv_data.lock);
 			bmk_cpuset_clr(core_data->coreid, &prv_data.idle_cores);
 			bmk_atomics_unlock(&prv_data.lock);
-			/*
+#ifdef USE_SPINLOCK
 		} else {
 			bmk_scheduler_debug("-- core %d spinlock worked", core_data->coreid);
 		}
+#endif /* USE_SPINLOCK */
+		/*
 		 */
 	}
 	/*
@@ -358,7 +386,7 @@ void bmk_scheduler_thread_block(bmk_atomic_t *lock) {
 }
 
 void bmk_scheduler_thread_unblock(bmk_thread_t *t) {
-	bmk_scheduler_debug("--> bmk_scheduler_thread_unblock");
+	bmk_scheduler_debug("--> bmk_scheduler_thread_unblock (core=%d)", t->sched_data.coreid);
 	bmk_core_data_t *core_data = bmk_sys_get_core_data();
 #ifdef UNDEFINED
 	bmk_scheduler_debug("--> bmk_scheduler_thread_unblock procid=%d thread=%p",
