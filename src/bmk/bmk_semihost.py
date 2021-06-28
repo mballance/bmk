@@ -12,6 +12,7 @@ class BmkSemihost(object):
     
     def __init__(self):
         self.coreid = None
+        self.fatal_f = None
         pass
     
     @hvlrpc.func
@@ -48,6 +49,9 @@ class BmkSemihost(object):
             print("[Fatal] " + self.coreid + ": " + self.format(fmt, ap))
         else:
             print("[Fatal] " + self.format(fmt, ap))
+            
+        if self.fatal_f:
+            self.fatal_f()
     
     def format(self, fmt, ap : hvlrpc.va_list) -> str:
         params = []
